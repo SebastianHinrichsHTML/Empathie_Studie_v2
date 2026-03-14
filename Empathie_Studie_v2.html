@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Psychologische Studie – Onlinebefragung</title>
+<style>
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════════════════════ */
+:root {
+  --bg:          #f7f6f3;
+  --surface:     #ffffff;
+  --border:      #e2dfd8;
+  --border-dark: #c8c4bb;
+  --text:        #1a1916;
+  --text-muted:  #6b6860;
+  --accent:      #3d6b8e;
+  --accent-dark: #2c5070;
+  --accent-light:#eef4f8;
+  --success:     #2d7a4f;
+  --error:       #c0392b;
+  --error-light: #fdf0ef;
+  --radius:      6px;
+  --shadow:      0 1px 4px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.05);
+  --font-body:   'Georgia', 'Times New Roman', serif;
+  --font-ui:     -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --max-w:       720px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-ui);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  min-height: 100vh;
+  padding: 0 0 60px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════════════════ */
+#progress-bar-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--border);
+  z-index: 100;
+}
+#progress-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0%;
+  transition: width .4s ease;
+}
+#progress-label {
+  position: fixed;
+  top: 8px; right: 16px;
+  font-family: var(--font-ui);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--text-muted);
+  z-index: 100;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════ */
+#app {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 48px 24px 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 40px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+  #app { padding: 36px 16px 16px; }
+  .card { padding: 24px 20px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════════════════ */
+.page-title {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.page-subtitle {
+  font-size: .88rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+.section-heading {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 28px 0 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.section-heading:first-child { margin-top: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   VIGNETTE TEXT
+═══════════════════════════════════════════════════════════ */
+.vignette-name {
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: var(--accent-dark);
+  margin-bottom: 14px;
+}
+.vignette-text {
+  font-family: var(--font-body);
+  font-size: .97rem;
+  line-height: 1.8;
+  color: var(--text);
+}
+.vignette-text p { margin-bottom: 14px; }
+.vignette-text p:last-child { margin-bottom: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   LIKERT SCALE
+═══════════════════════════════════════════════════════════ */
+.item-block {
+  margin-bottom: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.item-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.item-text {
+  font-size: .94rem;
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+.likert-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.likert-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 4px;
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--font-ui);
+  color: var(--text-muted);
+  font-size: .8rem;
+  min-width: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.likert-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}
+.likert-btn.selected {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+.likert-btn .val {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.likert-btn .lbl {
+  font-size: .65rem;
+  text-align: center;
+  line-height: 1.2;
+  display: none;
+}
+
+/* Show labels on first/last only on wider screens */
+@media (min-width: 480px) {
+  .likert-btn:first-child .lbl,
+  .likert-btn:last-child .lbl { display: block; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════════════════════ */
+.field { margin-bottom: 20px; }
+.field label {
+  display: block;
+  font-size: .88rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+.field input[type="number"],
+.field input[type="text"],
+.field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-size: .94rem;
+  font-family: var(--font-ui);
+  background: var(--surface);
+  color: var(--text);
+  appearance: none;
+  -webkit-appearance: none;
+  transition: border-color .15s;
+}
+.field input:focus, .field select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(61,107,142,.12);
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b6860' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+.field-hint {
+  font-size: .78rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Radio group */
+.radio-group { display: flex; flex-direction: column; gap: 8px; }
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: .92rem;
+  transition: all .15s;
+}
+.radio-option:hover { border-color: var(--accent); background: var(--accent-light); }
+.radio-option input[type="radio"] { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; }
+.radio-option.checked { border-color: var(--accent); background: var(--accent-light); }
+
+/* Consent checkbox */
+.consent-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border: 1.5px solid var(--border-dark);
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-top: 20px;
+  transition: border-color .15s;
+}
+.consent-box:hover { border-color: var(--accent); }
+.consent-box.checked { border-color: var(--accent); background: var(--accent-light); }
+.consent-box input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.consent-text { font-size: .88rem; line-height: 1.55; }
+
+/* ═══════════════════════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════════════════════ */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 24px;
+  border-radius: var(--radius);
+  font-family: var(--font-ui);
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all .15s;
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-dark);
+}
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+.btn-ghost {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.btn-ghost:hover { background: var(--accent-light); }
+
+/* ═══════════════════════════════════════════════════════════
+   ERROR / VALIDATION
+═══════════════════════════════════════════════════════════ */
+.error-msg {
+  font-size: .82rem;
+  color: var(--error);
+  background: var(--error-light);
+  border: 1px solid #f5c6c2;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  margin-top: 16px;
+  display: none;
+}
+.error-msg.visible { display: block; }
+.field-error input, .field-error select { border-color: var(--error) !important; }
+.field-error .field-error-msg {
+  font-size: .78rem;
+  color: var(--error);
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   NOTICE BOXES
+═══════════════════════════════════════════════════════════ */
+.notice {
+  padding: 14px 18px;
+  border-radius: var(--radius);
+  font-size: .88rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.notice-info {
+  background: var(--accent-light);
+  border: 1px solid #bcd3e6;
+  color: var(--accent-dark);
+}
+.notice-success {
+  background: #edf7f1;
+  border: 1px solid #aadabf;
+  color: var(--success);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   END PAGE
+═══════════════════════════════════════════════════════════ */
+.export-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DEBRIEFING SECTIONS
+═══════════════════════════════════════════════════════════ */
+.debriefing-section { margin-bottom: 18px; }
+.debriefing-section h4 {
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.debriefing-section p { font-size: .9rem; line-height: 1.6; color: var(--text); }
+
+/* ═══════════════════════════════════════════════════════════
+   HIDDEN ATTENTION CHECK STYLE (looks like normal item)
+═══════════════════════════════════════════════════════════ */
+/* No special styling needed – it renders as a normal item */
+
+/* ═══════════════════════════════════════════════════════════
+   FADE TRANSITION
+═══════════════════════════════════════════════════════════ */
+#app { animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.page-transition { animation: fadeIn .2s ease; }
+</style>
+</head>
+<body>
+
+<!-- Progress -->
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+<div id="progress-label"></div>
+
+<div id="app"></div>
+
+<script>
+'use strict';
+
+/* ════════════════════════════════════════════════════════════
+   1. SURVEY CONFIG
+════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  title:          'Psychologische Studie',
+  totalGroups:    9,
+  ecItems:        6,   // items per EC scale
+  mstatItems:     13,
+  attentionValue: 2,   // correct answer for attention check
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. VIGNETTE DATA
+════════════════════════════════════════════════════════════ */
+const VIGNETTES = {
+  1: {
+    label: 'Fall 1',
+    opfer: {
+      name: 'Anna (27)',
+      text: `Anna (27) hat eine Geschichte von instabilen Bindungen hinter sich. Ihr Vater verließ die Familie früh, und ihre Mutter war durch Depressionen oft emotional nicht verfügbar. Anna hat eine panische Angst vor dem Alleinsein entwickelt. Sie fühlt sich nur dann sicher, wenn sie die Bestätigung bekommt, dass sie gesehen wird. Jede kleinste Distanzierung eines Freundes löst bei ihr existenzielle Verlustängste und Verzweiflung aus, die sie oft nächtelang nicht schlafen lassen. Sie fühlt sich wie ein Blatt im Wind, das ohne die Spiegelung durch andere keine eigene Identität besitzt.`
+    },
+    taeter: {
+      name: 'Lena (29)',
+      text: `Lena (29) inszeniert in ihrem Freundeskreis ständig dramatische Krisen, um im Mittelpunkt zu stehen. Sie nutzt sexualisierte Provokation und übertriebene Emotionalität, um die Aufmerksamkeit auf sich zu ziehen, selbst bei unpassenden Anlässen wie Beerdigungen oder Hochzeiten anderer. Sie manipuliert ihr soziales Umfeld durch Suizidankündigungen oder theatralische Zusammenbrüche, sobald sich jemand von ihr abwendet. Ihre Freunde fühlen sich zunehmend emotional ausgesaugt, da Lena keinen Raum für die Bedürfnisse anderer lässt und Gespräche immer wieder auf sich selbst lenkt.`
+    },
+    integriert: {
+      name: 'Annalena (28)',
+      text: `Annalena (28) wuchs in einem familiären Umfeld auf, in dem Nähe und Verlässlichkeit nur begrenzt vorhanden waren. Ihr Vater verließ die Familie früh und ihre Mutter war durch wiederkehrende depressive Phasen häufig emotional zurückgezogen. Als Kind erlebte Annalena immer wieder Momente, in denen sie sich unsichtbar fühlte oder den Eindruck hatte, übersehen zu werden. Mit der Zeit entwickelte sie eine starke Angst vor dem Alleinsein. Sie fühlt sich nur dann wirklich sicher, wenn sie spürt, dass andere sie wahrnehmen und bestätigen.
+
+Schon früh merkte sie, dass andere stärker auf sie reagierten, wenn sie ihre Gefühle sehr deutlich zeigte. Wenn sie weinte, laut wurde oder ihre Probleme dramatisch schilderte, bekam sie mehr Aufmerksamkeit. Schritt für Schritt gewöhnte sie sich daran, ihre Emotionen intensiv auszudrücken, um sicherzugehen, dass andere sie nicht übersehen.
+
+Heute zeigt sich dieses Muster deutlich in ihrem Freundeskreis. Annalena gerät häufig in dramatische Krisen und stellt ihre emotionalen Zustände stark in den Mittelpunkt. Sie nutzt provokatives oder sexualisiertes Verhalten und reagiert mit übersteigerter Emotionalität, auch in Situationen, in denen andere das als unpassend empfinden, etwa bei Hochzeiten oder Beerdigungen.
+
+Für ihre Freunde wirkt dieses Verhalten zunehmend belastend. Gespräche drehen sich häufig um Annalenas Probleme, während für die Anliegen anderer nur wenig Raum bleibt. Einige fühlen sich manipuliert oder emotional erschöpft und beginnen, sich von ihr zu distanzieren.
+
+Für Annalena selbst fühlen sich diese Situationen jedoch anders an. Wenn Menschen sich zurückziehen, erlebt sie das als tiefen Verlust. In solchen Momenten überfluten sie Gefühle von Verlassenheit und innerer Leere. Die starken emotionalen Reaktionen, die für andere wie Manipulation wirken, sind für sie Versuche, mit dieser Angst umzugehen. Gleichzeitig führen genau diese Reaktionen oft dazu, dass sich andere noch weiter von ihr entfernen, wodurch ihre Angst vor dem Verlassenwerden immer wieder neu ausgelöst wird.`
+    }
+  },
+  2: {
+    label: 'Fall 2',
+    opfer: {
+      name: 'Marie (34)',
+      text: `Marie (34) leidet unter massiven Versagensängsten und chronischer Erschöpfung. Sie wuchs bei einem fordernden Vater auf, für den Liebe an akademische Höchstleistungen geknüpft war. Fehler wurden mit tagelangem Schweigen bestraft. Heute arbeitet Marie bis zur Selbstaufgabe, übernimmt die Aufgaben kranker Kollegen und findet keine Grenze mehr zwischen Arbeit und Privatleben. Sie fühlt sich im Team isoliert und unverstanden, hat häufige Weinanfälle und leidet unter dem Gefühl, egal wie viel sie leistet, niemals genug zu sein.`
+    },
+    taeter: {
+      name: 'Luise (36)',
+      text: `Luise (36) wird von ihren Untergebenen als extrem kontrollierend und unnahbar beschrieben. Sie delegiert kaum Aufgaben, da sie davon überzeugt ist, dass niemand ihre Qualitätsstandards erfüllt. In Meetings korrigiert sie Kollegen herablassend vor versammelter Mannschaft und reagiert auf kleinste Fehler mit passiv-aggressivem Verhalten. Sie erzeugt ein Klima der Angst und des Leistungsdrucks. Wenn Mitarbeiter sich über die Arbeitslast beschweren, reagiert Luise mit Unverständnis und unterstellt ihnen mangelnde Disziplin oder Kompetenz.`
+    },
+    integriert: {
+      name: 'Marieluise (35)',
+      text: `Marieluise (35) wuchs in einem Elternhaus auf, in dem Anerkennung stark an Leistung gebunden war. Ihr Vater stellte hohe akademische Anforderungen und machte früh deutlich, dass Erfolg eine zentrale Voraussetzung für Wertschätzung war. Wenn Marieluise Fehler machte, reagierte er oft mit tagelangem Schweigen. Für sie fühlten sich diese Phasen wie ein emotionaler Entzug an.
+
+Schon als Kind entwickelte sie eine große Angst davor, Erwartungen nicht zu erfüllen. Sie bemühte sich, besonders fleißig und fehlerfrei zu sein, weil sie hoffte, so Kritik vermeiden zu können. Mit der Zeit entstand bei ihr die Überzeugung, dass sie nur dann akzeptiert wird, wenn sie mehr leistet als andere und keine Schwächen zeigt.
+
+Heute arbeitet Marieluise mit großer Intensität. Sie bleibt häufig lange im Büro, übernimmt zusätzlich Aufgaben und springt für kranke Kollegen ein. Die Grenze zwischen Arbeit und Privatleben ist für sie kaum noch spürbar. Gleichzeitig begleitet sie ständig das Gefühl, den Anforderungen nicht wirklich zu genügen. Trotz hoher Leistung erlebt sie sich selbst oft als unzureichend. Immer wieder kommt es zu Momenten starker Erschöpfung oder zu Weinanfällen, bei denen sie sich isoliert und unverstanden fühlt.
+
+Im Umgang mit ihrem Team zeigt sich jedoch eine andere Seite dieser Dynamik. Viele Mitarbeiter erleben Marieluise als sehr kontrollierend und distanziert. Sie delegiert Aufgaben nur ungern, weil sie befürchtet, dass andere ihre Qualitätsstandards nicht erfüllen. In Meetings korrigiert sie Kollegen häufig direkt und in einem Ton, den andere als herablassend wahrnehmen. Schon kleine Fehler führen zu deutlicher Kritik oder spürbarer Gereiztheit. Im Team entsteht dadurch ein Klima von starkem Leistungsdruck. Einige Mitarbeiter fühlen sich beobachtet oder verunsichert. Wenn sie über hohe Arbeitsbelastung sprechen, reagiert Marieluise häufig mit Unverständnis. Für sie ist große Anstrengung selbstverständlich, da sie selbst gelernt hat, Leistung über alles zu stellen.
+
+Während ihr Verhalten für andere hart und kontrollierend wirkt, erlebt Marieluise selbst vor allem den inneren Druck, Fehler unbedingt vermeiden zu müssen. Die hohen Ansprüche an ihr Umfeld entsprechen den Maßstäben, die sie auch an sich selbst anlegt. Gleichzeitig führt genau diese Haltung oft dazu, dass Kollegen Abstand halten, wodurch sich ihr Gefühl verstärkt, dass sie sich letztlich nur auf sich selbst verlassen kann.`
+    }
+  },
+  3: {
+    label: 'Fall 3',
+    opfer: {
+      name: 'Jan (41)',
+      text: `Jan (41) beschreibt sein Leben rückblickend als von anhaltender sozialer Isolation geprägt. Seine Kindheit erlebt er als eine Zeit mangelnder Resonanz und fehlender Spiegelung. Als hochbegabtes Kind wuchs er in einem bildungsfernen und emotional instabilen Umfeld auf, in dem seine kognitiven Fähigkeiten nicht als besondere Begabung wahrgenommen wurden, sondern eher als Provokation oder Verschrobenheit galten.
+
+Die daraus entstehenden frühen Kränkungen führten dazu, dass Jan sich zunehmend in eine Art „innere Emigration" zurückzog. Viele seiner Gedanken und Interessen behielt er für sich, da Versuche, sie mit anderen zu teilen, häufig auf Unverständnis stießen. Gleichzeitig kam es immer wieder zu impulsiven Ausbrüchen, besonders dann, wenn er sich missverstanden oder ungerecht behandelt fühlte.
+
+In der Adoleszenz verschärfte sich diese Dynamik. Gleichaltrige reagierten auf seine Andersartigkeit oft mit Ausgrenzung und Mobbing. Auch mit Lehrern geriet er regelmäßig in Konflikte, nicht zuletzt wegen seines aufbrausenden Temperaments und seiner Neigung, Autoritäten offen infrage zu stellen.
+
+Im Erwachsenenalter gelang es Jan dennoch, beruflich erfolgreich zu sein. Heute arbeitet er als Führungskraft in einem mittelständischen Unternehmen, wobei sein wöchentliches Arbeitspensum regelmäßig 60 Stunden überschreitet.`
+    },
+    taeter: {
+      name: 'Luca (43)',
+      text: `Luca (43) zeigt klassische Züge des malignen Narzissmus. In seinem beruflichen Umfeld agiert er mit einer Mischung aus Grandiosität, Überheblichkeit und geringer Empathiefähigkeit. Besonders sensibel reagiert er auf Situationen, in denen andere über fachliche Kompetenzen verfügen, die seine eigene Expertise infrage stellen könnten. In solchen Momenten nutzt er seine analytischen Fähigkeiten gezielt, um das Gegenüber zu diskreditieren oder dessen Kompetenz infrage zu stellen.
+
+Dabei greift er selten zu offenen Angriffen. Stattdessen arbeitet er mit subtilen Abwertungen, ironischen Kommentaren oder scheinbar sachlichen Einwänden, die bei seinem Gegenüber zunehmend Gefühle von Unsicherheit und Inkompetenz hervorrufen. Kollegen berichten, dass sie sich nach Gesprächen mit ihm häufig verunsichert oder intellektuell unterlegen fühlen, ohne genau benennen zu können, wodurch dieser Eindruck entstanden ist.
+
+Wird Luca jedoch direkt mit seinem Verhalten konfrontiert, verändert sich seine Reaktion abrupt. Kritik erlebt er nicht als legitime Rückmeldung, sondern als persönlichen Angriff. In solchen Situationen neigt er zu einer Täter-Opfer-Umkehr. Er stellt sich selbst als das eigentliche Opfer dar und interpretiert berechtigte Einwände als ungerechtfertigte Verfolgung. Vorwürfe bezüglich seines dominanten oder manipulativen Führungsstils weist er daher regelmäßig als übertriebene oder böswillige Kampagne gegen seine Person zurück und bezeichnet entsprechende Kritik nicht selten als "Hexenjagd".`
+    },
+    integriert: {
+      name: 'Jan-Luca (42)',
+      text: `Jan-Luca (42) wuchs in einem Umfeld auf, in dem seine Fähigkeiten wenig verstanden wurden. Schon als Kind stellte er viele Fragen, dachte komplex und entwickelte Interessen, die in seiner Familie kaum Resonanz fanden. Statt Anerkennung erlebte er häufig Irritation oder Ablehnung. Seine Begabung wurde nicht als besondere Stärke wahrgenommen, sondern eher als Verschrobenheit oder Provokation. Für ihn bedeutete das eine frühe Erfahrung von Nichtbeachtung und fehlender Spiegelung.
+
+Mit der Zeit zog sich Jan-Luca zunehmend zurück. Viele seiner Gedanken und Interessen behielt er für sich, weil Versuche, sie mit anderen zu teilen, oft auf Unverständnis stießen. In der Schule verstärkte sich diese Dynamik. Mitschüler reagierten auf seine Andersartigkeit mit Spott oder Ausgrenzung, und auch mit Lehrern kam es immer wieder zu Konflikten. Besonders dann, wenn er sich missverstanden oder ungerecht behandelt fühlte, reagierte er impulsiv und temperamentvoll.
+
+Im Erwachsenenalter gelang es ihm dennoch, beruflich erfolgreich zu werden. Heute arbeitet Jan-Luca als Führungskraft in einem mittelständischen Unternehmen. Er investiert viel Zeit und Energie in seine Arbeit und arbeitet häufig mehr als sechzig Stunden pro Woche. In seinem beruflichen Umfeld findet er die Anerkennung, die ihm früher oft gefehlt hat.
+
+Gleichzeitig erleben Kollegen ihn häufig als distanziert und überlegen. Wenn andere fachliche Kompetenz zeigen, die seine eigene infrage stellen könnte, reagiert Jan-Luca oft mit subtiler Kritik oder ironischen Bemerkungen. Aufgrund seiner analytischen Fähigkeiten erkennt er schnell Schwächen in Argumenten und nutzt diese in Diskussionen sehr präzise. Für andere wirkt diese Art jedoch oft herablassend.
+
+Mitarbeiter berichten, dass sie sich nach Gesprächen mit ihm häufig verunsichert oder entwertet fühlen. Wird Jan-Luca direkt auf sein Verhalten angesprochen, reagiert er oft mit deutlicher Kränkung. Kritik erlebt er schnell als persönlichen Angriff.
+
+Für Jan-Luca selbst fühlen sich diese Situationen anders an. Wenn seine Kompetenz infrage gestellt wird, erinnert ihn das an frühere Erfahrungen von Nichtbeachtung und Abwertung. Die starke Betonung seiner intellektuellen Überlegenheit dient ihm daher auch als Schutz. Gleichzeitig führt diese Haltung häufig dazu, dass sich andere Menschen emotional von ihm distanzieren, wodurch sich sein Gefühl verstärkt, letztlich nicht wirklich verstanden zu werden.`
+    }
+  }
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. SCALE DEFINITIONS
+════════════════════════════════════════════════════════════ */
+
+// MSTAT-II: Multiple Stimulus Types Ambiguity Tolerance (13 Items, Likert 1–5)
+// Reverse-coded items: 7, 8, 10, 13
+const MSTAT_ITEMS = [
+  { id:'MSTAT_01', text:'Es fällt mir schwer, in einer ungewissen Situation zu leben, auch wenn ich weiß, dass das Ergebnis für mich günstig ausfallen wird.', reverse: false },
+  { id:'MSTAT_02', text:'Ich ziehe es vor, Probleme zu vermeiden, die ich von verschiedenen Seiten betrachten muss.', reverse: false },
+  { id:'MSTAT_03', text:'Ich versuche, Situationen zu vermeiden, die unklar oder ohne klare Bedeutung sind.', reverse: false },
+  { id:'MSTAT_04', text:'Ich bevorzuge vertraute Situationen gegenüber neuen.', reverse: false },
+  { id:'MSTAT_05', text:'Fragen, die nicht nur aus einer einzigen Perspektive betrachtet werden können, bereiten mir ein gewisses Unbehagen.', reverse: false },
+  { id:'MSTAT_06', text:'Ich versuche, Situationen zu meiden, die zu komplex für mich sind, um sie zu verstehen.', reverse: false },
+  { id:'MSTAT_07', text:'Ich bin im Allgemeinen tolerant gegenüber uneindeutigen Dingen.', reverse: true },
+  { id:'MSTAT_08', text:'Ich mag es, mehrdeutige und unklare Situationen herausarbeiten zu wollen.', reverse: true },
+  { id:'MSTAT_09', text:'Ich versuche, Probleme zu vermeiden, die für alle Beteiligten keine eindeutig richtige Antwort haben.', reverse: false },
+  { id:'MSTAT_10', text:'Ich bevorzuge im Allgemeinen das Neue und Ungewisse gegenüber dem Vertrauten und Vorhersehbaren.', reverse: true },
+  { id:'MSTAT_11', text:'Ich mag Situationen nicht, die unklar sind.', reverse: false },
+  { id:'MSTAT_12', text:'Es fällt mir schwer, eine Entscheidung zu treffen, wenn ich das Ergebnis nicht klar vorhersagen kann.', reverse: false },
+  { id:'MSTAT_13', text:'Ich mag uneindeutige Situationen und empfinde diese häufig als aufregend.', reverse: true },
+];
+
+// Kurzskala Empathic Concern (6 Items, angelehnt an IRI-EC, Davis 1983)
+// Reverse-coded: EC2, EC4
+const EC_ITEMS = [
+  { id:'EC1', text:'Ich empfinde Mitgefühl für die Person aus der Fallbeschreibung.', reverse: false },
+  { id:'EC2', text:'Die Situation der Person aus der Fallbeschreibung berührt mich emotional nur wenig.', reverse: true },
+  { id:'EC3', text:'Beim Lesen der Fallbeschreibung fühlte ich mich der Person emotional zugewandt.', reverse: false },
+  { id:'EC4', text:'Die Schwierigkeiten der Person lassen mich eher distanziert.', reverse: true },
+  { id:'EC5', text:'Ich wünsche mir, dass es der Person aus der Fallbeschreibung besser geht.', reverse: false },
+  { id:'EC6', text:'Gegenüber der Person aus der Fallbeschreibung empfinde ich kaum Wärme oder Anteilnahme.', reverse: true },
+];
+
+// Attention check item (inserted into MSTAT block)
+const ATTENTION_ITEM = {
+  id: 'ATTN_01',
+  text: 'Zur Qualitätssicherung der Studie: Bitte wählen Sie bei dieser Frage Antwortoption 2.',
+  reverse: false,
+  isAttention: true,
+  correctAnswer: 2,
+};
+
+/* ════════════════════════════════════════════════════════════
+   4. RANDOMIZATION LOGIC
+════════════════════════════════════════════════════════════ */
+
+/**
+ * Assigns participant to one of 9 experimental variations purely at random.
+ * No localStorage-based minimization is used.
+ * Variation codes: A1_1, A1_2, A1_3, A2_1, A2_2, A2_3, B_1, B_2, B_3
+ * Returns { variation, gruppe, fallNr }
+ */
+function assignVariation() {
+  const variations = [
+    'A1_1','A1_2','A1_3',
+    'A2_1','A2_2','A2_3',
+    'B_1', 'B_2', 'B_3',
+  ];
+  const chosen = variations[Math.floor(Math.random() * variations.length)];
+  return {
+    variation: chosen,
+    gruppe:    chosen.split('_')[0],       // 'A1', 'A2', 'B'
+    fallNr:    parseInt(chosen.split('_')[1]), // 1, 2, 3
+  };
+}
+
+/**
+ * Generates a simple UUID-like participant ID (not RFC-compliant, sufficient for study use).
+ */
+function generatePID() {
+  return 'P' + Date.now().toString(36).toUpperCase()
+    + Math.random().toString(36).substring(2, 7).toUpperCase();
+}
+
+/**
+ * Builds the ordered step list based on variation.
+ * Steps types: 'consent' | 'demographics' | 'mstat' | 'vignette' | 'ec' | 'end'
+ */
+function buildSteps(gruppe, fallNr) {
+  const base = ['consent', 'demographics', 'mstat'];
+  const vignetteSteps = [];
+
+  if (gruppe === 'A1') {
+    // Täter first, then Opfer
+    vignetteSteps.push(
+      { type:'vignette', part:'taeter', fallNr, ecKey:'ec_taeter' },
+      { type:'ec',       part:'taeter', fallNr, ecKey:'ec_taeter' },
+      { type:'vignette', part:'opfer',  fallNr, ecKey:'ec_opfer'  },
+      { type:'ec',       part:'opfer',  fallNr, ecKey:'ec_opfer'  },
+    );
+  } else if (gruppe === 'A2') {
+    // Opfer first, then Täter
+    vignetteSteps.push(
+      { type:'vignette', part:'opfer',  fallNr, ecKey:'ec_opfer'  },
+      { type:'ec',       part:'opfer',  fallNr, ecKey:'ec_opfer'  },
+      { type:'vignette', part:'taeter', fallNr, ecKey:'ec_taeter' },
+      { type:'ec',       part:'taeter', fallNr, ecKey:'ec_taeter' },
+    );
+  } else {
+    // B: Integrated
+    vignetteSteps.push(
+      { type:'vignette', part:'integriert', fallNr, ecKey:'ec_integriert' },
+      { type:'ec',       part:'integriert', fallNr, ecKey:'ec_integriert' },
+    );
+  }
+
+  return [
+    ...base.map(t => ({ type: t })),
+    ...vignetteSteps,
+    { type: 'end' },
+  ];
+}
+
+/* ════════════════════════════════════════════════════════════
+   5. DATA COLLECTION
+════════════════════════════════════════════════════════════ */
+const assignment = assignVariation();
+
+const DATA = {
+  participant_id:       generatePID(),
+  timestamp_start:      new Date().toISOString(),
+  timestamp_end:        null,
+  duration_seconds:     null,
+
+  // Randomization
+  variation:            assignment.variation,
+  gruppe:               assignment.gruppe,
+  fall_nr:              assignment.fallNr,
+  vignette_versions:    [],   // Array aller gezeigten Vignettenversions-IDs (z. B. ["V1b","V1a"])
+
+  // Demographics
+  alter:                null,
+  geschlecht:           null,
+  studiengang:          null,
+  semester:             null,
+  erfahrung:            null,
+
+  // MSTAT-II (raw + reverse-coded + mean)
+  mstat_raw:            {},
+  mstat_recoded:        {},
+  mstat_mean:           null,
+
+  // Attention check
+  attention_check_raw:  null,
+  attention_check_passed: null,
+
+  // EC Scales (raw + reverse-coded + mean per scale)
+  ec_opfer:             {},
+  ec_taeter:            {},
+  ec_integriert:        {},
+  ec_opfer_mean:        null,
+  ec_taeter_mean:       null,
+  ec_integriert_mean:   null,
+  ec_seq_mean:          null,
+  ec_final_compare:     null,
+};
+
+/* ════════════════════════════════════════════════════════════
+   6. SERVER SUBMISSION (stub – replace with real endpoint)
+════════════════════════════════════════════════════════════ */
+async function submitToServer(data) {
+  const ENDPOINT = "https://fancy-math-1c92.sebastian-hinrichs9.workers.dev";
+
+  const payload = {
+    participant_id: data.participant_id,
+    study_type: "hauptstudie",
+    payload: data
+  };
+
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await res.json();
+    return res.ok && result.ok === true;
+  } catch (e) {
+    console.error("Server submission failed:", e);
+    return false;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   7. SCORE COMPUTATION
+════════════════════════════════════════════════════════════ */
+function reverseCode(val, max = 5) {
+  return (val !== null && val !== undefined) ? (max + 1 - val) : null;
+}
+
+function computeMSTAT() {
+  const recoded = {};
+  MSTAT_ITEMS.forEach(item => {
+    const raw = DATA.mstat_raw[item.id];
+    recoded[item.id] = item.reverse ? reverseCode(raw) : raw;
+  });
+  DATA.mstat_recoded = recoded;
+  const vals = Object.values(recoded).filter(v => v !== null);
+  DATA.mstat_mean = vals.length === MSTAT_ITEMS.length
+    ? +(vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(3)
+    : null;
+}
+
+function computeEC(ecKey) {
+  const raw = DATA[ecKey] || {};
+  const recoded = {};
+  EC_ITEMS.forEach(item => {
+    const v = raw[item.id];
+    recoded[item.id] = item.reverse ? reverseCode(v) : v;
+  });
+  const meanKey = ecKey + '_mean';
+  const vals = Object.values(recoded).filter(v => v !== null);
+  DATA[meanKey] = vals.length === EC_ITEMS.length
+    ? +(vals.reduce((a,b) => a+b, 0) / vals.length).toFixed(3)
+    : null;
+  // store recoded alongside raw
+  DATA[ecKey + '_recoded'] = recoded;
+}
+
+/* ════════════════════════════════════════════════════════════
+   7b. FINAL SCORE COMPUTATION
+════════════════════════════════════════════════════════════ */
+function computeFinalScores() {
+  const g = DATA.gruppe; // 'A1', 'A2', or 'B'
+
+  if (g === 'A1' || g === 'A2') {
+    // ec_seq_mean = mean of opfer_mean and taeter_mean (both must be present)
+    const o = DATA.ec_opfer_mean;
+    const t = DATA.ec_taeter_mean;
+    DATA.ec_seq_mean = (o !== null && t !== null)
+      ? +((o + t) / 2).toFixed(3)
+      : null;
+    DATA.ec_final_compare = DATA.ec_seq_mean;
+  } else {
+    // Gruppe B: sequential mean not applicable
+    DATA.ec_seq_mean      = null;
+    DATA.ec_final_compare = DATA.ec_integriert_mean;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   8. EXPORT
+════════════════════════════════════════════════════════════ */
+// Unicode-safe download helper (Blob primary, data-URI fallback)
+function downloadFile(content, filename, mime) {
+  try {
+    const blob = new Blob([content], { type: mime + ';charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch(e) {
+    // Fallback: encodeURIComponent only (never uses btoa, safe for umlauts)
+    const a = document.createElement('a');
+    a.href = 'data:' + mime + ';charset=utf-8,' + encodeURIComponent(content);
+    a.download = filename;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+  }
+}
+
+function exportJSON() {
+  downloadFile(JSON.stringify(DATA, null, 2),
+    'studie_' + DATA.participant_id + '.json', 'application/json');
+}
+
+function exportSPSS() {
+  const lines = [];
+  const ts = new Date().toISOString().replace('T',' ').substring(0,19);
+
+  lines.push('* ============================================================');
+  lines.push('* SPSS-Syntax – Empathie & Narrative Studie (Einzelproband)');
+  lines.push('* Participant ID: ' + DATA.participant_id);
+  lines.push('* Generiert: ' + ts);
+  lines.push('* ============================================================');
+  lines.push('');
+
+  // Numeric variables
+  const numVars = [
+    ['ALTER', 'F3', 'Alter der Versuchsperson (Jahre)'],
+    ['FALL_NR', 'F1', 'Fallnummer (1=Annalena / 2=Marieluise / 3=Jan-Luca)'],
+    ['SEMESTER', 'F2', 'Fachsemester'],
+    ['ATTN_PASS', 'F1', 'Attention Check bestanden (0=nein / 1=ja)'],
+    ...MSTAT_ITEMS.map(it => [it.id.replace('_',''), 'F1', it.text.substring(0,60)]),
+    ...EC_ITEMS.map(it => ['EC_OPF_'+it.id, 'F1', 'EC Opfer: ' + it.id]),
+    ...EC_ITEMS.map(it => ['EC_TAE_'+it.id, 'F1', 'EC Taeter: ' + it.id]),
+    ...EC_ITEMS.map(it => ['EC_INT_'+it.id, 'F1', 'EC Integriert: ' + it.id]),
+    ['EC_OPFER_MEAN',      'F8.3', 'Empathic Concern Mittelwert (Opfer-Vignette)'],
+    ['EC_TAETER_MEAN',     'F8.3', 'Empathic Concern Mittelwert (Taeter-Vignette)'],
+    ['EC_INTEGRIERT_MEAN', 'F8.3', 'Empathic Concern Mittelwert (Integriert-Vignette)'],
+    ['EC_SEQ_MEAN',        'F8.3', 'EC Sequenziell Mittelwert (Mittel aus Opfer+Taeter)'],
+    ['EC_FINAL_COMPARE',   'F8.3', 'EC Analysevariable (seq. oder integriert je Gruppe)'],
+    ['MSTAT_MEAN',         'F8.3', 'MSTAT-II Gesamtmittelwert (Ambiguitaetstoleranz)'],
+    ['DURATION_SECONDS',   'F6',   'Bearbeitungsdauer in Sekunden'],
+  ];
+
+  lines.push('DATA LIST FREE');
+  lines.push('  / ' + numVars.map(v => v[0]+' ('+v[1]+')').join('\n    '));
+  lines.push('  .');
+  lines.push('');
+
+  // String vars
+  const strVars = [
+    ['PID', 'A15', 'Participant ID'],
+    ['VARIATION', 'A6', 'Versuchsgruppe (z.B. A1_2)'],
+    ['GRUPPE', 'A2', 'Hauptbedingung (A1/A2/B)'],
+    ['GESCHLECHT', 'A3', 'Geschlecht'],
+    ['STUDIENGANG', 'A6', 'Studiengang'],
+    ['ERFAHRUNG', 'A6', 'Praxiserfahrung'],
+    ['VIGNETTE_VERSIONS', 'A30', 'Gezeigte Vignettenversionen (Semikolon-getrennt, z.B. V1b;V1a)'],
+    ['TS_START', 'A25', 'Zeitstempel Beginn'],
+    ['TS_END', 'A25', 'Zeitstempel Ende'],
+  ];
+  lines.push('STRING ' + strVars.map(v => v[0]+' ('+v[1]+')').join('\n       ') + ' .');
+  lines.push('');
+
+  // Data row (numeric)
+  const row = [
+    DATA.alter || 99,
+    DATA.fall_nr || 99,
+    DATA.semester || 99,
+    DATA.attention_check_passed ? 1 : 0,
+    ...MSTAT_ITEMS.map(it => DATA.mstat_raw[it.id] || 99),
+    ...EC_ITEMS.map(it => (DATA.ec_opfer||{})[it.id] || 99),
+    ...EC_ITEMS.map(it => (DATA.ec_taeter||{})[it.id] || 99),
+    ...EC_ITEMS.map(it => (DATA.ec_integriert||{})[it.id] || 99),
+    DATA.ec_opfer_mean      !== null ? DATA.ec_opfer_mean      : 99,
+    DATA.ec_taeter_mean     !== null ? DATA.ec_taeter_mean     : 99,
+    DATA.ec_integriert_mean !== null ? DATA.ec_integriert_mean : 99,
+    DATA.ec_seq_mean        !== null ? DATA.ec_seq_mean        : 99,
+    DATA.ec_final_compare   !== null ? DATA.ec_final_compare   : 99,
+    DATA.mstat_mean         !== null ? DATA.mstat_mean         : 99,
+    DATA.duration_seconds   !== null ? DATA.duration_seconds   : 99,
+  ];
+  lines.push('BEGIN DATA');
+  lines.push(row.join(' '));
+  lines.push('END DATA.');
+  lines.push('');
+
+  // String assignments
+  const strVals = [DATA.participant_id, DATA.variation, DATA.gruppe,
+    DATA.geschlecht||'', DATA.studiengang||'', DATA.erfahrung||'',
+    (DATA.vignette_versions||[]).join(';'),  // Vignettenversionen Semikolon-getrennt
+    DATA.timestamp_start||'', DATA.timestamp_end||''];
+  strVars.forEach((v,i) => {
+    lines.push("COMPUTE " + v[0] + " = '" + (strVals[i]||'').replace(/'/g,"''") + "'.");
+  });
+  lines.push('EXECUTE.');
+  lines.push('');
+
+  // Variable labels
+  lines.push('VARIABLE LABELS');
+  [...numVars, ...strVars].forEach(v => {
+    lines.push("  " + v[0] + " '" + v[2].replace(/'/g,"''") + "'");
+  });
+  lines.push('  .');
+  lines.push('');
+
+  // Value labels
+  const likertVarNames = [
+    ...MSTAT_ITEMS.map(it => it.id.replace('_','')),
+    ...EC_ITEMS.map(it => 'EC_OPF_'+it.id),
+    ...EC_ITEMS.map(it => 'EC_TAE_'+it.id),
+    ...EC_ITEMS.map(it => 'EC_INT_'+it.id),
+  ];
+  lines.push('VALUE LABELS');
+  lines.push('  ' + likertVarNames.join('\n  '));
+  lines.push("  1 'Trifft ueberhaupt nicht zu'  2 'Trifft eher nicht zu'");
+  lines.push("  3 'Teils-teils'  4 'Trifft eher zu'  5 'Trifft voll zu'  99 'Fehlend'");
+  lines.push('/');
+  lines.push("  ATTN_PASS  0 'Nicht bestanden'  1 'Bestanden'");
+  lines.push('  .');
+  lines.push('');
+
+  // Missing values
+  lines.push('MISSING VALUES');
+  lines.push('  ' + numVars.map(v=>v[0]).join('\n  ') + ' (99)');
+  lines.push('  .');
+  lines.push('');
+
+  // Recode reversed items
+  const mstatRev = MSTAT_ITEMS.filter(i=>i.reverse).map(i=>i.id.replace('_',''));
+  const ecRev    = EC_ITEMS.filter(i=>i.reverse);
+  lines.push('* Rekodierung umgekehrt gepolter Items (1→5, 2→4, 3→3, 4→2, 5→1).');
+  [...mstatRev,
+    ...ecRev.map(i=>'EC_OPF_'+i.id),
+    ...ecRev.map(i=>'EC_TAE_'+i.id),
+    ...ecRev.map(i=>'EC_INT_'+i.id),
+  ].forEach(v => {
+    lines.push('RECODE '+v+' (1=5)(2=4)(3=3)(4=2)(5=1)(ELSE=SYSMIS) INTO '+v+'_R.');
+  });
+  lines.push('EXECUTE.');
+  lines.push('');
+
+  // Compute means
+  const mstatRecNames = MSTAT_ITEMS.map(i => i.reverse
+    ? i.id.replace('_','')+'_R' : i.id.replace('_','')).join(', ');
+  lines.push('COMPUTE MSTAT_MEAN_CHECK = MEAN(' + mstatRecNames + ').');
+  lines.push("VARIABLE LABELS MSTAT_MEAN_CHECK 'MSTAT-II Kontrollberechnung (sollte MSTAT_MEAN entsprechen)'.");
+  lines.push('EXECUTE.');
+  lines.push('');
+  lines.push('* Hinweis: EC_OPFER_MEAN, EC_TAETER_MEAN, EC_INTEGRIERT_MEAN, EC_SEQ_MEAN,');
+  lines.push('* EC_FINAL_COMPARE und MSTAT_MEAN wurden direkt aus dem Datensatz exportiert.');
+  lines.push('* EC_FINAL_COMPARE ist die zentrale Analysevariable:');
+  lines.push('*   Gruppe A1/A2: Mittelwert aus Opfer- und Taeter-EC-Skalen');
+  lines.push('*   Gruppe B: Mittelwert der integrierten EC-Skala');
+  lines.push('');
+  lines.push('* Ende der Syntax.');
+
+  downloadFile(lines.join('\n'),
+    'studie_' + DATA.participant_id + '.sps', 'text/plain');
+}
+
+
+function exportCSV() {
+  const headers = [
+    'participant_id','variation','gruppe','fall_nr',
+    'alter','geschlecht','studiengang','semester','erfahrung',
+    'vignette_versions',
+    'attention_check_passed',
+    'mstat_mean',
+    'ec_opfer_mean','ec_taeter_mean','ec_integriert_mean',
+    'ec_seq_mean','ec_final_compare',
+    'duration_seconds',
+    'timestamp_start','timestamp_end',
+  ];
+  const escape = v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    return s.includes(',') || s.includes('"') || s.includes('\n')
+      ? '"' + s.replace(/"/g, '""') + '"' : s;
+  };
+  // vignette_versions als Semikolon-String für CSV
+  const exportData = Object.assign({}, DATA, {
+    vignette_versions: (DATA.vignette_versions || []).join(';'),
+  });
+  const row = headers.map(k => escape(exportData[k]));
+  const csv = headers.join(',') + '\n' + row.join(',');
+  downloadFile(csv, 'studie_' + DATA.participant_id + '.csv', 'text/csv');
+}
+
+/* ════════════════════════════════════════════════════════════
+   9. RENDERING ENGINE
+════════════════════════════════════════════════════════════ */
+const steps       = buildSteps(assignment.gruppe, assignment.fallNr);
+let   currentStep = 0;
+
+function totalVisibleSteps() { return steps.length; }
+
+function updateProgress() {
+  const pct = Math.round((currentStep / (totalVisibleSteps() - 1)) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-label').textContent =
+    'Schritt ' + (currentStep + 1) + ' / ' + totalVisibleSteps();
+}
+
+function render() {
+  const app = document.getElementById('app');
+  app.innerHTML = '';
+  const step = steps[currentStep];
+
+  if      (step.type === 'consent')      renderConsent(app);
+  else if (step.type === 'demographics') renderDemographics(app);
+  else if (step.type === 'mstat')        renderMSTAT(app);
+  else if (step.type === 'vignette')     renderVignette(app, step);
+  else if (step.type === 'ec')           renderEC(app, step);
+  else if (step.type === 'end')          renderEnd(app);
+
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goNext() { currentStep++; render(); }
+function goBack() { if (currentStep > 0) { currentStep--; render(); } }
+
+// ── NAV BUTTONS ─────────────────────────────────────────────
+function navButtons({ backEnabled = true, nextLabel = 'Weiter →', onNext }) {
+  const row = document.createElement('div');
+  row.className = 'btn-row';
+  if (backEnabled && currentStep > 0) {
+    const b = document.createElement('button');
+    b.className = 'btn btn-secondary';
+    b.textContent = '← Zurück';
+    b.onclick = goBack;
+    row.appendChild(b);
+  }
+  const n = document.createElement('button');
+  n.className = 'btn btn-primary';
+  n.textContent = nextLabel;
+  n.onclick = onNext;
+  row.appendChild(n);
+  return row;
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: CONSENT
+──────────────────────────────────────────────────────────── */
+function renderConsent(app) {
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+  card.innerHTML = `
+    <h1 class="page-title">Onlinebefragung zur Wahrnehmung von Personen</h1>
+    <p class="page-subtitle">Masterstudium Psychologie · DIPLOMA Hochschule</p>
+
+    <p style="font-size:.94rem;line-height:1.7;margin-bottom:16px">
+      Diese Onlinebefragung ist Teil einer wissenschaftlichen Untersuchung im Rahmen einer Masterarbeit
+      im Studiengang Psychologie an der DIPLOMA Hochschule.
+    </p>
+    <p style="font-size:.94rem;line-height:1.7;margin-bottom:6px">
+      Sie lesen zunächst eine kurze Fallbeschreibung und beantworten anschließend einige Fragen dazu. Danach folgen einige allgemeine Einstellungsfragen.
+    </p>
+    <p style="font-size:.94rem;line-height:1.7;margin-bottom:20px">
+      Die Bearbeitung dauert etwa <strong>5–10 Minuten</strong>.
+    </p>
+
+    <div class="notice notice-info">
+      <strong>📋 Hinweise zur Teilnahme</strong><br><br>
+      <strong>Freiwilligkeit:</strong> Die Teilnahme ist freiwillig. Sie können die Befragung jederzeit ohne Angabe von Gründen abbrechen.<br><br>
+      <strong>Antwortverhalten:</strong> Es gibt keine richtigen oder falschen Antworten. Für den wissenschaftlichen Wert der Studie sind ehrliche und spontane Antworten besonders wichtig.<br><br>
+      <strong>Datenschutz:</strong> Es werden keine personenbezogenen Daten erhoben; IP-Adressen, Cookies oder Browserdaten werden nicht gespeichert. Ihre Antworten werden ausschließlich für wissenschaftliche Zwecke ausgewertet.
+    </div>
+
+    <label class="consent-box" id="consent-box">
+      <input type="checkbox" id="consent-cb">
+      <span class="consent-text">
+        Ich habe die obenstehenden Informationen gelesen und verstanden. Ich nehme freiwillig an dieser anonymen wissenschaftlichen Studie teil und bin mit der Verarbeitung meiner Antworten zu wissenschaftlichen Zwecken einverstanden.
+        Mir ist bekannt, dass ich meine Teilnahme jederzeit abbrechen kann.
+      </span>
+    </label>
+
+    <div class="error-msg" id="err-consent">
+      Bitte bestätigen Sie Ihre Einwilligung, um fortzufahren.
+    </div>
+  `;
+
+  const box = card.querySelector('#consent-box');
+  const cb  = card.querySelector('#consent-cb');
+  box.addEventListener('click', () => {
+    cb.checked = !cb.checked;
+    box.classList.toggle('checked', cb.checked);
+  });
+  cb.addEventListener('click', e => e.stopPropagation());
+
+  card.appendChild(navButtons({
+    backEnabled: false,
+    nextLabel: 'Einwilligen und starten →',
+    onNext: () => {
+      if (!cb.checked) {
+        card.querySelector('#err-consent').classList.add('visible');
+      } else {
+        goNext();
+      }
+    }
+  }));
+
+  app.appendChild(card);
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: DEMOGRAPHICS
+──────────────────────────────────────────────────────────── */
+function renderDemographics(app) {
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+
+  const prev = {
+    alter:       DATA.alter,
+    geschlecht:  DATA.geschlecht,
+    studiengang: DATA.studiengang,
+    semester:    DATA.semester,
+    erfahrung:   DATA.erfahrung,
+  };
+
+  card.innerHTML = `
+    <h2 class="page-title">Angaben zur Person</h2>
+    <p class="page-subtitle">Alle Angaben sind freiwillig und vollständig anonym.</p>
+
+    <div class="field" id="field-alter">
+      <label for="inp-alter">Alter (Jahre)</label>
+      <input type="number" id="inp-alter" min="16" max="99" step="1"
+             placeholder="z. B. 24" value="${prev.alter || ''}">
+    </div>
+
+    <div class="field" id="field-geschlecht">
+      <label for="sel-geschlecht">Geschlecht</label>
+      <select id="sel-geschlecht">
+        <option value="">– bitte wählen –</option>
+        <option value="w"  ${prev.geschlecht==='w'  ?'selected':''}>weiblich</option>
+        <option value="m"  ${prev.geschlecht==='m'  ?'selected':''}>männlich</option>
+        <option value="d"  ${prev.geschlecht==='d'  ?'selected':''}>divers / nicht-binär</option>
+        <option value="tb" ${prev.geschlecht==='tb' ?'selected':''}>trans/bi-gender</option>
+        <option value="k"  ${prev.geschlecht==='k'  ?'selected':''}>keine Angabe / andere</option>
+      </select>
+    </div>
+
+    <div class="field" id="field-studiengang">
+      <label for="sel-studiengang">Studieren Sie derzeit Psychologie oder einen psychologienahen Studiengang?</label>
+      <select id="sel-studiengang">
+        <option value="">– bitte wählen –</option>
+        <option value="psy_bsc" ${prev.studiengang==='psy_bsc'?'selected':''}>Ja, Psychologie (Bachelor)</option>
+        <option value="psy_msc" ${prev.studiengang==='psy_msc'?'selected':''}>Ja, Psychologie (Master)</option>
+        <option value="psy_dip" ${prev.studiengang==='psy_dip'?'selected':''}>Ja, Psychologie (Diplom / auslaufend)</option>
+        <option value="psy_nah" ${prev.studiengang==='psy_nah'?'selected':''}>Ja, psychologienaher Studiengang (z. B. Soziale Arbeit, Erziehungswissenschaft)</option>
+        <option value="nein"    ${prev.studiengang==='nein'   ?'selected':''}>Nein</option>
+      </select>
+    </div>
+
+    <div class="field" id="field-semester">
+      <label for="sel-semester">Fachsemester</label>
+      <select id="sel-semester">
+        <option value="">– bitte wählen –</option>
+        ${[1,2,3,4,5,6,7,8,9,10].map(s =>
+          `<option value="${s}" ${prev.semester==s?'selected':''}>${s}. Semester</option>`
+        ).join('')}
+        <option value="11"        ${prev.semester==='11'       ?'selected':''}>11. Semester oder höher</option>
+        <option value="abschluss" ${prev.semester==='abschluss'?'selected':''}>Abschluss bereits erworben</option>
+      </select>
+    </div>
+
+    <div class="field" id="field-erfahrung">
+      <label for="sel-erfahrung">Klinisch-psychologische oder therapeutische Praxiserfahrung</label>
+      <select id="sel-erfahrung">
+        <option value="">– bitte wählen –</option>
+        <option value="keine"  ${prev.erfahrung==='keine' ?'selected':''}>Keine</option>
+        <option value="wenig"  ${prev.erfahrung==='wenig' ?'selected':''}>Wenig (z. B. Praktikum, Hospitationen)</option>
+        <option value="mittel" ${prev.erfahrung==='mittel'?'selected':''}>Mittel (z. B. Hilfstherapeut, Beratung)</option>
+        <option value="viel"   ${prev.erfahrung==='viel'  ?'selected':''}>Viel (z. B. laufende Ausbildung, Berufserfahrung)</option>
+      </select>
+    </div>
+
+    <div class="error-msg" id="err-demo">
+      Bitte füllen Sie alle Pflichtfelder aus.
+    </div>
+  `;
+
+  // Radio styling
+  card.querySelectorAll('.radio-option input').forEach(inp => {
+    inp.addEventListener('change', () => {
+      // Only deselect siblings within the same name group
+      card.querySelectorAll(`.radio-option input[name="${inp.name}"]`).forEach(o => {
+        o.closest('.radio-option').classList.remove('checked');
+      });
+      inp.closest('.radio-option').classList.add('checked');
+    });
+  });
+
+  card.appendChild(navButtons({
+    onNext: () => {
+      const alter      = parseInt(card.querySelector('#inp-alter').value);
+      const geschlecht = card.querySelector('#sel-geschlecht').value;
+      const studiengang= card.querySelector('#sel-studiengang').value;
+      const semester   = card.querySelector('#sel-semester').value;
+      const erfahrung  = card.querySelector('#sel-erfahrung').value;
+
+      const ok = !isNaN(alter) && alter > 0 && geschlecht && studiengang && semester && erfahrung;
+      if (!ok) {
+        card.querySelector('#err-demo').classList.add('visible');
+      } else {
+        DATA.alter       = alter;
+        DATA.geschlecht  = geschlecht;
+        DATA.studiengang = studiengang;
+        DATA.semester    = semester;
+        DATA.erfahrung   = erfahrung;
+        goNext();
+      }
+    }
+  }));
+
+  app.appendChild(card);
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: MSTAT-II  (with embedded attention check)
+──────────────────────────────────────────────────────────── */
+function renderMSTAT(app) {
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+  card.innerHTML = `
+    <h2 class="page-title">Allgemeine Einstellungen</h2>
+    <p class="page-subtitle">
+      Die folgenden Aussagen beziehen sich auf Ihre allgemeinen Einstellungen und Reaktionen.
+      Bitte geben Sie an, wie sehr jede Aussage auf Sie zutrifft.
+    </p>
+  `;
+
+  // Build item list: insert attention check after item 6
+  const itemsWithAttention = [
+    ...MSTAT_ITEMS.slice(0, 6),
+    ATTENTION_ITEM,
+    ...MSTAT_ITEMS.slice(6),
+  ];
+
+  itemsWithAttention.forEach(item => {
+    const prev = item.isAttention
+      ? DATA.attention_check_raw
+      : DATA.mstat_raw[item.id];
+
+    const block = document.createElement('div');
+    block.className = 'item-block';
+    block.dataset.id = item.id;
+
+    block.innerHTML = `
+      <p class="item-text">${item.text}</p>
+      <div class="likert-row" role="group" aria-label="Bewertung">
+        ${[1,2,3,4,5].map(v => `
+          <button class="likert-btn${prev===v?' selected':''}"
+                  data-val="${v}" type="button"
+                  aria-label="Antwortoption ${v}">
+            <span class="val">${v}</span>
+            <span class="lbl">${v===1?'Trifft gar nicht zu':v===5?'Trifft voll zu':''}</span>
+          </button>`).join('')}
+      </div>
+    `;
+
+    block.querySelectorAll('.likert-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        block.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        const val = parseInt(btn.dataset.val);
+        if (item.isAttention) {
+          DATA.attention_check_raw    = val;
+          DATA.attention_check_passed = (val === CONFIG.attentionValue);
+        } else {
+          DATA.mstat_raw[item.id] = val;
+        }
+      });
+    });
+
+    card.appendChild(block);
+  });
+
+  const errEl = document.createElement('div');
+  errEl.className = 'error-msg';
+  errEl.id = 'err-mstat';
+  errEl.textContent = 'Bitte beantworten Sie alle Fragen, bevor Sie fortfahren.';
+  card.appendChild(errEl);
+
+  card.appendChild(navButtons({
+    onNext: () => {
+      const allAnswered = MSTAT_ITEMS.every(it => DATA.mstat_raw[it.id] !== undefined)
+                       && DATA.attention_check_raw !== null;
+      if (!allAnswered) {
+        errEl.classList.add('visible');
+        // Scroll to first unanswered
+        const firstEmpty = card.querySelector('.item-block:not(:has(.selected))');
+        if (firstEmpty) firstEmpty.scrollIntoView({ behavior:'smooth', block:'center' });
+      } else {
+        errEl.classList.remove('visible');
+        computeMSTAT();
+        goNext();
+      }
+    }
+  }));
+
+  app.appendChild(card);
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: VIGNETTE
+──────────────────────────────────────────────────────────── */
+function renderVignette(app, step) {
+  const vignette = VIGNETTES[step.fallNr][step.part];
+
+  // Vignettenversion-ID erzeugen und dokumentieren (opfer=a, taeter=b, integriert=c)
+  const partCode = { opfer: 'a', taeter: 'b', integriert: 'c' }[step.part] || '?';
+  const vigId    = 'V' + step.fallNr + partCode;
+  if (!DATA.vignette_versions.includes(vigId)) {
+    DATA.vignette_versions.push(vigId);   // nur einmal eintragen (Back-Navigation)
+  }
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+
+  // Split text on double newlines into paragraphs
+  const paragraphs = vignette.text.split('\n\n')
+    .map(p => `<p>${p.trim()}</p>`).join('');
+
+  card.innerHTML = `
+    <h2 class="page-title">Bitte lesen Sie die folgende Fallbeschreibung sorgfältig.</h2>
+    <p class="page-subtitle">Lesen Sie den Text aufmerksam. Danach folgen einige Fragen dazu.</p>
+    <div class="vignette-name">${vignette.name}</div>
+    <div class="vignette-text">${paragraphs}</div>
+  `;
+
+  card.appendChild(navButtons({
+    nextLabel: 'Zur Bewertung →',
+    onNext: goNext,
+  }));
+
+  app.appendChild(card);
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: EC SCALE
+──────────────────────────────────────────────────────────── */
+function renderEC(app, step) {
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+  card.innerHTML = `
+    <h2 class="page-title">Fragen zur Fallbeschreibung</h2>
+    <p class="page-subtitle">
+      Kurzskala zur situativen empathischen Reaktion
+      <span style="color:var(--text-muted);font-weight:normal">
+        (angelehnt an den Interpersonal Reactivity Index, Davis 1983)
+      </span>
+    </p>
+    <div class="notice notice-info" style="margin-bottom:24px">
+      Bitte bewerten Sie, wie sehr die folgenden Aussagen auf Ihre Reaktion beim Lesen der Fallbeschreibung zutreffen.
+    </div>
+  `;
+
+  const existingData = DATA[step.ecKey] || {};
+
+  EC_ITEMS.forEach(item => {
+    const prev = existingData[item.id];
+    const block = document.createElement('div');
+    block.className = 'item-block';
+    block.dataset.id = item.id;
+
+    block.innerHTML = `
+      <p class="item-text">${item.text}</p>
+      <div class="likert-row" role="group" aria-label="Bewertung">
+        ${[1,2,3,4,5].map(v => `
+          <button class="likert-btn${prev===v?' selected':''}"
+                  data-val="${v}" type="button"
+                  aria-label="Antwortoption ${v}">
+            <span class="val">${v}</span>
+            <span class="lbl">${v===1?'Trifft gar nicht zu':v===5?'Trifft voll zu':''}</span>
+          </button>`).join('')}
+      </div>
+    `;
+
+    block.querySelectorAll('.likert-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        block.querySelectorAll('.likert-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        if (!DATA[step.ecKey]) DATA[step.ecKey] = {};
+        DATA[step.ecKey][item.id] = parseInt(btn.dataset.val);
+      });
+    });
+
+    card.appendChild(block);
+  });
+
+  const errEl = document.createElement('div');
+  errEl.className = 'error-msg';
+  errEl.textContent = 'Bitte beantworten Sie alle Fragen, bevor Sie fortfahren.';
+  card.appendChild(errEl);
+
+  const isLast = currentStep === steps.length - 2; // last step before 'end'
+
+  card.appendChild(navButtons({
+    nextLabel: isLast ? 'Studie abschließen →' : 'Weiter →',
+    onNext: () => {
+      const ecData = DATA[step.ecKey] || {};
+      const allAnswered = EC_ITEMS.every(it => ecData[it.id] !== undefined);
+      if (!allAnswered) {
+        errEl.classList.add('visible');
+        const firstEmpty = card.querySelector('.item-block:not(:has(.selected))');
+        if (firstEmpty) firstEmpty.scrollIntoView({ behavior:'smooth', block:'center' });
+      } else {
+        errEl.classList.remove('visible');
+        computeEC(step.ecKey);
+        goNext();
+      }
+    }
+  }));
+
+  app.appendChild(card);
+}
+
+/* ────────────────────────────────────────────────────────────
+   PAGE: END / DEBRIEFING
+──────────────────────────────────────────────────────────── */
+function renderEnd(app) {
+  // Finalize data
+  computeFinalScores();  // muss vor timestamp_end stehen damit Werte im Export verfügbar
+  DATA.timestamp_end = new Date().toISOString();
+  const startMs = new Date(DATA.timestamp_start).getTime();
+  DATA.duration_seconds = Math.round((Date.now() - startMs) / 1000);
+
+  const card = document.createElement('div');
+  card.className = 'card page-transition';
+  card.innerHTML = `
+    <h2 class="page-title">Vielen Dank für Ihre Teilnahme!</h2>
+    <p style="font-size:.96rem;margin-bottom:24px;color:var(--text-muted)">
+      Bearbeitungsdauer: ca. ${Math.round(DATA.duration_seconds / 60)} Minute(n).
+    </p>
+
+    <div class="notice notice-success" style="margin-bottom:24px">
+      Ihre Antworten wurden vollständig erfasst.
+    </div>
+
+    <div class="debriefing-section">
+      <h4>Was wurde untersucht?</h4>
+      <p>
+        Diese Studie untersuchte, wie die Darstellungsform biografischer Informationen
+        die empathische Bewertung einer Person beeinflusst. Konkret wurde geprüft,
+        ob eine sequenzielle Darbietung von Opfer- und Täteranteilen zu anderen
+        empathischen Reaktionen führt als eine integrierte Gesamtdarstellung.
+        Als möglicher Moderator wurde die individuelle Ambiguitätstoleranz erhoben.
+      </p>
+    </div>
+
+    <div class="debriefing-section">
+      <h4>Warum die Verdeckung?</h4>
+      <p>
+        Um Einflüsse sozialer Erwünschtheit zu minimieren, wurde der tatsächliche
+        Untersuchungsgegenstand erst nach der Bearbeitung offengelegt.
+        Die dargestellten Personen sind fiktiv und dienen ausschließlich
+        der wissenschaftlichen Illustration.
+      </p>
+    </div>
+
+    <div class="debriefing-section">
+      <h4>Datenschutz</h4>
+      <p>
+        Ihre Daten wurden vollständig anonym erhoben. Es wurden keine personenidentifizierenden
+        Merkmale gespeichert. Die Verarbeitung erfolgt gemäß den Grundsätzen der DSGVO (Art.&thinsp;5).
+        Die Daten werden ausschließlich im Rahmen einer wissenschaftlichen Masterarbeit ausgewertet.
+        Sie können Ihre Daten unten als Datei herunterladen oder die Seite einfach schließen.
+      </p>
+    </div>
+
+    <div class="debriefing-section">
+      <h4>Kontakt</h4>
+      <p>
+        Bei Fragen zur Studie wenden Sie sich an den Studienleiter: Sebastian Hinrichs, DIPLOMA Hochschule, M.Sc. Psychologie.<br><br>
+        E-Mail: <a href="mailto:sebastian.hinrichs9@gmail.com" style="color:var(--accent)">sebastian.hinrichs9@gmail.com</a>
+      </p>
+    </div>
+
+    <div style="border-top:1px solid var(--border);margin-top:24px;padding-top:20px">
+      <p style="font-size:.85rem;font-weight:600;color:var(--text-muted);margin-bottom:12px">
+        DATENEXPORT (optional, für Forschungszwecke)
+      </p>
+      <div class="export-row">
+        <button class="btn btn-ghost" onclick="exportJSON()">📥 JSON herunterladen</button>
+        <button class="btn btn-ghost" onclick="exportSPSS()">📊 SPSS-Syntax (.sps)</button>
+        <button class="btn btn-ghost" onclick="exportCSV()">📋 CSV herunterladen</button>
+      </div>
+    </div>
+  `;
+
+  // ── Server-Einwilligung & Speicher-Button ──────────────────
+  const saveWrap = document.createElement('div');
+  saveWrap.style.marginTop = '18px';
+  saveWrap.innerHTML = `
+    <div class="notice notice-info" style="margin-bottom:14px">
+      Es werden keine direkten personenbezogenen Angaben erhoben oder gespeichert.
+      Mit Klick auf den Button werden Ihre Antworten für wissenschaftliche Zwecke an den Studienserver übertragen.
+    </div>
+    <label class="consent-box" id="server-consent-box">
+      <input type="checkbox" id="server-consent">
+      <span class="consent-text">
+        Ich bin einverstanden, dass meine Antworten ohne direkte personenbezogene Angaben
+        für wissenschaftliche Zwecke auf dem Studienserver gespeichert werden.
+      </span>
+    </label>
+    <div class="export-row" style="margin-top:14px">
+      <button class="btn btn-primary" id="server-save-btn" disabled>
+        Antworten anonym speichern
+      </button>
+    </div>
+    <div class="error-msg" id="server-save-status" style="display:none;margin-top:12px"></div>
+  `;
+  card.appendChild(saveWrap);
+
+  const serverConsent = card.querySelector('#server-consent');
+  const serverBtn     = card.querySelector('#server-save-btn');
+  const serverStatus  = card.querySelector('#server-save-status');
+
+  serverConsent.addEventListener('change', () => {
+    serverBtn.disabled = !serverConsent.checked;
+    serverBtn.className = serverConsent.checked ? 'btn btn-primary' : 'btn btn-disabled';
+  });
+
+  serverBtn.addEventListener('click', async () => {
+    if (!serverConsent.checked) return;
+    serverBtn.disabled = true;
+    serverBtn.textContent = 'Speichere ...';
+    const ok = await submitToServer(DATA);
+    serverStatus.style.display = 'block';
+    if (ok) {
+      serverStatus.className = 'notice notice-success';
+      serverStatus.textContent = 'Ihre Antworten wurden erfolgreich gespeichert.';
+      serverBtn.textContent = 'Erfolgreich gespeichert';
+    } else {
+      serverStatus.className = 'error-msg visible';
+      serverStatus.textContent = 'Die automatische Speicherung war nicht möglich. Bitte nutzen Sie den lokalen Download.';
+      serverBtn.disabled = false;
+      serverBtn.textContent = 'Antworten anonym speichern';
+    }
+  });
+
+  app.appendChild(card);
+}
+
+/* ════════════════════════════════════════════════════════════
+   10. INIT
+════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  render();
+});
+</script>
+</body>
+</html>
