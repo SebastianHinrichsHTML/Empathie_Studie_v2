@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pretest · Vignettenstudie · DIPLOMA 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #f5f4f0;
+      --surface:     #ffffff;
+      --surface-alt: #f0efeb;
+      --border:      #dbd7ce;
+      --border-focus:#6a8eaf;
+      --text:        #1a1e26;
+      --text-mid:    #4a5468;
+      --text-muted:  #8a93a6;
+      --accent:      #2d5f8a;
+      --accent-l:    #e6eff8;
+      --accent-m:    #4a7fac;
+      --rule:        #e0dbd3;
+      --success:     #3a7d5a;
+      --warn:        #a05030;
+      --mono:        'Courier New', Courier, monospace;
+      --serif:       'Lora', Georgia, serif;
+      --sans:        'Inter', system-ui, sans-serif;
+      --shadow:      0 1px 4px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      font-family: var(--sans);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      padding: 13px 24px;
+    }
+    .header-inner {
+      max-width: 760px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .header-left { display: flex; flex-direction: column; gap: 1px; }
+    .header-label { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--accent); text-transform: uppercase; }
+    .header-sub { font-size: 11px; color: var(--text-muted); }
+
+    .progress-wrap { max-width: 760px; margin: 0 auto; padding: 28px 24px 0; }
+    .progress-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 8px; }
+    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.45s ease; }
+    .progress-meta { display: flex; justify-content: space-between; align-items: center; }
+    .progress-steps { font-family: var(--mono); font-size: 11px; color: var(--text-muted); }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 80px; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 36px 40px; margin-bottom: 20px; box-shadow: var(--shadow); }
+    .card-blue { background: var(--accent-l); border: 1px solid #c4d9ec; border-radius: 8px; padding: 28px 32px; margin-bottom: 20px; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .tag { display: inline-block; padding: 3px 10px; border-radius: 3px; font-family: var(--mono); font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; border: 1px solid currentColor; opacity: 0.85; }
+    .tag-accent  { color: var(--accent);  background: rgba(45,95,138,0.08); }
+    .tag-mid     { color: var(--accent-m);background: rgba(74,127,172,0.08); }
+    .tag-success { color: var(--success); background: rgba(58,125,90,0.08); }
+    .tag-purple  { color: #7a6a9a;        background: rgba(122,106,154,0.1); }
+
+    .page-title { font-family: var(--serif); font-size: 24px; font-weight: 600; line-height: 1.4; color: var(--text); margin-bottom: 6px; }
+    .page-sub { font-family: var(--mono); font-size: 12px; color: var(--text-muted); letter-spacing: 0.4px; margin-bottom: 28px; }
+    .section-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .body-text { font-size: 14.5px; color: var(--text-mid); line-height: 1.78; }
+    .note { font-size: 12.5px; color: var(--text-muted); font-style: italic; line-height: 1.55; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 30px 0 22px; }
+    .divider-line { flex: 1; height: 1px; background: var(--rule); }
+    .divider-label { font-family: var(--mono); font-size: 10px; color: var(--text-muted); letter-spacing: 1.5px; text-transform: uppercase; white-space: nowrap; }
+
+    .vignette-hint { font-size: 12.5px; color: var(--accent-m); font-style: italic; margin-bottom: 14px; }
+    .vignette-text {
+      font-family: var(--serif); font-size: 15.5px; line-height: 1.9;
+      color: var(--text); background: var(--surface);
+      border: 1px solid #c4d9ec; border-radius: 6px;
+      padding: 22px 26px; white-space: pre-wrap;
+    }
+
+    .dim-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px 24px; margin-bottom: 10px; }
+    .dim-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+    .dim-header-left { display: flex; align-items: center; gap: 10px; }
+    .dim-check { font-family: var(--mono); font-size: 11px; color: var(--success); }
+    .dim-frage { font-size: 14px; color: var(--text-mid); line-height: 1.6; margin-bottom: 14px; }
+
+    .likert-wrap { user-select: none; }
+    .likert-buttons { display: flex; gap: 6px; margin-bottom: 8px; }
+    .likert-btn {
+      flex: 1; padding: 10px 4px;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 5px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.13s, border-color 0.13s, box-shadow 0.13s;
+      font-family: var(--mono); font-size: 15px; color: var(--text-mid);
+      font-weight: 400; outline: none;
+    }
+    .likert-btn:hover:not(.selected) { background: #f0f4f8; border-color: #aac2d8; }
+    .likert-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; box-shadow: 0 2px 8px rgba(45,95,138,0.22); }
+    .likert-anchors { display: flex; justify-content: space-between; }
+    .likert-anker { font-size: 10.5px; color: var(--text-muted); line-height: 1.35; }
+    .likert-anker.right { text-align: right; }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 28px; border-radius: 5px; font-size: 13px; font-weight: 600; letter-spacing: 0.4px; cursor: pointer; font-family: var(--sans); transition: all 0.15s; border: 1.5px solid transparent; }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover { background: #245278; border-color: #245278; }
+    .btn-disabled { background: var(--surface-alt); color: var(--text-muted); border-color: var(--border); cursor: not-allowed; }
+    .btn-row { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; gap: 12px; flex-wrap: wrap; }
+    .validation-msg { font-family: var(--mono); font-size: 12px; }
+    .validation-ok   { color: var(--success); }
+    .validation-warn { color: var(--warn); }
+
+    .done-icon { font-size: 44px; margin-bottom: 16px; text-align: center; }
+    .done-title { font-family: var(--serif); font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 10px; color: var(--accent); }
+    .done-text { font-size: 14.5px; color: var(--text-mid); line-height: 1.78; max-width: 520px; margin: 0 auto 28px; text-align: center; }
+
+    .feedback-card { background: var(--surface-alt); border: 1px solid var(--border); border-radius: 6px; padding: 22px 26px; margin-bottom: 12px; }
+    .feedback-label { font-size: 13.5px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+    .feedback-hint { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; font-style: italic; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 36px; }
+    .info-box { background: rgba(45,95,138,0.06); border: 1px solid rgba(45,95,138,0.14); border-radius: 5px; padding: 13px 16px; }
+    .info-box-label { font-family: var(--mono); font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 5px; }
+    .info-box-val { font-size: 13px; color: var(--text-muted); }
+
+    .notice { padding: 14px 18px; background: rgba(45,95,138,0.04); border: 1px solid rgba(45,95,138,0.13); border-radius: 5px; font-size: 13px; color: var(--text-muted); line-height: 1.75; }
+    .notice strong { color: var(--accent); }
+
+    textarea { width: 100%; padding: 11px 13px; font-family: var(--sans); font-size: 13.5px; color: var(--text); background: var(--surface); border: 1.5px solid var(--border); border-radius: 5px; resize: vertical; outline: none; line-height: 1.6; transition: border-color 0.15s; }
+    textarea:focus { border-color: var(--border-focus); background: #fff; }
+    textarea::placeholder { color: var(--text-muted); }
+
+    .consent-box { background: #f0f5fb; border: 1.5px solid #b8d0e8; border-radius: 6px; padding: 24px 28px; margin-top: 28px; }
+    .consent-title { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 10px; }
+    .consent-label { display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px; color: var(--text-mid); line-height: 1.6; }
+    .consent-label input[type="checkbox"] { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+    .send-btn-wrap { margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+
+    .email-status { display: none; padding: 12px 18px; border-radius: 5px; font-size: 13px; font-weight: 500; }
+    .email-status.sending { display: block; background: #e8f0fb; border: 1px solid #aac4e0; color: var(--accent); }
+    .email-status.ok { display: block; background: #eaf5ef; border: 1px solid #90c8a8; color: var(--success); }
+    .email-status.err { display: block; background: #fdf0ec; border: 1px solid #e0a898; color: #a04030; }
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #aac4e0; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .fade-enter { animation: fadeIn 0.28s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 600px) {
+      .card, .card-blue { padding: 24px 20px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .likert-btn { padding: 8px 2px; }
+      .dim-card { padding: 16px 18px; }
+    }
+    @media print { .site-header { position: relative; } .btn { display: none; } }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="header-label">Pretest · Vignettenstudie</span>
+      <span class="header-sub">Hinrichs, 2026 · DIPLOMA Hochschule</span>
+    </div>
+    <div id="headerTag"></div>
+  </div>
+</header>
+
+<div class="progress-wrap" id="progressWrap" style="display:none;">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-meta">
+    <span class="progress-steps" id="progressSteps"></span>
+  </div>
+</div>
+
+<div class="wrap" id="mainWrap"></div>
+
+<script>
+// ─── SERVER SUBMISSION (Cloudflare Worker) ────────────────────────────────────
+async function submitToServer(data) {
+  const ENDPOINT = "https://fancy-math-1c92.sebastian-hinrichs9.workers.dev";
+  const payload = {
+    participant_id: data.participant_id || partId,
+    study_type: "pretest",
+    payload: data
+  };
+  try {
+    const res = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const result = await res.json();
+    return res.ok && result.ok === true;
+  } catch (e) {
+    console.error("Server submission failed:", e);
+    return false;
+  }
+}
+
+// ─── AUTO-PID ────────────────────────────────────────────────────────────────
+// Format: 2 Buchstaben + 4 Ziffern + 2 Buchstaben + 4 Ziffern  (z. B. PT7342MV1905)
+// O und I ausgeschlossen (Verwechslungsgefahr mit 0 und 1).
+function generatePID() {
+  const C = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const D = "0123456789";
+  const r = p => p[Math.floor(Math.random() * p.length)];
+  return [r(C),r(C),r(D),r(D),r(D),r(D),r(C),r(C),r(D),r(D),r(D),r(D)].join("");
+}
+
+// ─── BEWERTUNGS-ITEMS ────────────────────────────────────────────────────────
+// 5 Items je Vignette (Skala 1–5).
+// item.id stimmt 1:1 mit den Exportvariablen überein.
+const MC_ITEMS = [
+  {
+    id: "opfer_wahrnehmung",
+    label: "Opferwahrnehmung",
+    frage: "Die Person wirkt auf mich eher wie ein Opfer ihrer Umstände.",
+    ankerL: "Stimme überhaupt\nnicht zu",
+    ankerR: "Stimme voll\nzu"
+  },
+  {
+    id: "taeter_wahrnehmung",
+    label: "Täterwahrnehmung",
+    frage: "Die Person wirkt auf mich eher verantwortlich für die Situation.",
+    ankerL: "Stimme überhaupt\nnicht zu",
+    ankerR: "Stimme voll\nzu"
+  },
+  {
+    id: "ambivalenz",
+    label: "Ambivalenz",
+    frage: "Die Situation der Person wirkt auf mich moralisch ambivalent.",
+    ankerL: "Stimme überhaupt\nnicht zu",
+    ankerR: "Stimme voll\nzu"
+  },
+  {
+    id: "sympathie",
+    label: "Sympathie",
+    frage: "Wie sympathisch erscheint Ihnen diese Person?",
+    ankerL: "Nicht sympathisch",
+    ankerR: "Sehr sympathisch"
+  },
+  {
+    id: "verstaendlichkeit",
+    label: "Verständlichkeit",
+    frage: "Wie verständlich war die Fallbeschreibung?",
+    ankerL: "Nicht verständlich",
+    ankerR: "Sehr verständlich"
+  },
+  // Validierungsitem für den Pretest: prüft emotionale/situative Glaubwürdigkeit der Vignette
+  {
+    id: "realismus",
+    label: "Emotionale Glaubwürdigkeit",
+    frage: "Wie realistisch wirkt die geschilderte Situation insgesamt?",
+    ankerL: "Überhaupt nicht\nrealistisch",
+    ankerR: "Sehr\nrealistisch"
+  },
+];
+
+// ─── VIGNETTEN ───────────────────────────────────────────────────────────────
+// Alle 9 Versionen: 3 Fälle × Bedingungen A1 / A2 / B
+const ALLE_VIGNETTEN = [
+  // ── FALL 1: ANNALENA ─────────────────────────────────────────────────────
+  { id:"V1a", fall:1, typ:"A1", fallLabel:"Fall 1 – Annalena", label:"Annalena (28) · A1",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Anna (27) hat eine Geschichte von instabilen Bindungen hinter sich. Ihr Vater verließ die Familie früh, und ihre Mutter war durch Depressionen oft emotional nicht verfügbar. Anna hat eine panische Angst vor dem Alleinsein entwickelt. Sie fühlt sich nur dann sicher, wenn sie die Bestätigung bekommt, dass sie gesehen wird. Jede kleinste Distanzierung eines Freundes löst bei ihr existenzielle Verlustängste und Verzweiflung aus, die sie oft nächtelang nicht schlafen lassen. Sie fühlt sich wie ein Blatt im Wind, das ohne die Spiegelung durch andere keine eigene Identität besitzt.`},
+  { id:"V1b", fall:1, typ:"A2", fallLabel:"Fall 1 – Annalena", label:"Annalena (28) · A2",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Lena (29) inszeniert in ihrem Freundeskreis ständig dramatische Krisen, um im Mittelpunkt zu stehen. Sie nutzt sexualisierte Provokation und übertriebene Emotionalität, um die Aufmerksamkeit auf sich zu ziehen, selbst bei unpassenden Anlässen wie Beerdigungen oder Hochzeiten anderer. Sie manipuliert ihr soziales Umfeld durch Suizidankündigungen oder theatralische Zusammenbrüche, sobald sich jemand von ihr abwendet. Ihre Freunde fühlen sich zunehmend emotional ausgesaugt, da Lena keinen Raum für die Bedürfnisse anderer lässt und Gespräche immer wieder auf sich selbst lenkt.`},
+  { id:"V1c", fall:1, typ:"B",  fallLabel:"Fall 1 – Annalena", label:"Annalena (28) · B",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Annalena (28) wuchs in einem familiären Umfeld auf, in dem Nähe und Verlässlichkeit nur begrenzt vorhanden waren. Ihr Vater verließ die Familie früh, und ihre Mutter war durch wiederkehrende depressive Phasen häufig emotional zurückgezogen. Für Annalena bedeutete das, dass wichtige Bezugspersonen zwar physisch anwesend sein konnten, emotional jedoch oft nicht erreichbar waren. Als Kind erlebte sie wiederholt Momente, in denen sie sich unsichtbar oder übersehen fühlte. Aus diesen Erfahrungen entwickelte sich bei ihr eine ausgeprägte Angst vor dem Alleinsein sowie das Gefühl, nur dann wirklich zu existieren, wenn sie von anderen wahrgenommen und bestätigt wird.
+
+Im Laufe ihrer Entwicklung lernte Annalena, dass sie besonders dann Aufmerksamkeit erhielt, wenn sie ihre Gefühle stark und dramatisch zeigte. Wenn sie weinte, laut wurde oder von Problemen erzählte, reagierten andere Menschen intensiver auf sie. Schrittweise verfestigte sich dadurch ein Muster: Aufmerksamkeit musste aktiv hergestellt werden, bevor sie verloren ging. Hinter diesem Verhalten stand ein tiefes inneres Erleben von Unsicherheit, nämlich die ständige Befürchtung, verlassen oder übersehen zu werden.
+
+Im Erwachsenenalter zeigt sich dieses Muster deutlich in ihrem sozialen Umfeld. In ihrem Freundeskreis inszeniert Annalena häufig dramatische Krisen und stellt ihre emotionalen Zustände stark in den Vordergrund. Sie nutzt provokatives oder sexualisiertes Verhalten und reagiert mit übersteigerter Emotionalität, selbst in Situationen, in denen dies unpassend wirkt, etwa bei Hochzeiten oder Beerdigungen anderer. Wenn sie spürt, dass sich jemand von ihr distanziert, reagiert sie mit intensiven Zusammenbrüchen oder droht mit Selbstverletzung.
+
+Für ihre Freunde wirkt dieses Verhalten zunehmend belastend. Gespräche drehen sich häufig um Annalenas Probleme, während für die Anliegen anderer kaum Raum bleibt. Für Annalena selbst sind die dramatischen Reaktionen weniger bewusst kalkulierte Manipulationen als vielmehr gelernte Strategien, um intensive innere Zustände zu bewältigen. Paradoxerweise führen genau diese Strategien jedoch häufig dazu, dass sich andere Menschen zurückziehen, wodurch sich ihre ursprüngliche Angst vor dem Verlassenwerden immer wieder bestätigt.`},
+
+  // ── FALL 2: MARIELUISE ───────────────────────────────────────────────────
+  { id:"V2a", fall:2, typ:"A1", fallLabel:"Fall 2 – Marieluise", label:"Marieluise (35) · A1",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Marie (34) leidet unter massiven Versagensängsten und chronischer Erschöpfung. Sie wuchs bei einem fordernden Vater auf, für den Liebe an akademische Höchstleistungen geknüpft war. Fehler wurden mit tagelangem Schweigen bestraft. Heute arbeitet Marie bis zur Selbstaufgabe, übernimmt die Aufgaben kranker Kollegen und findet keine Grenze mehr zwischen Arbeit und Privatleben. Sie fühlt sich im Team isoliert und unverstanden, hat häufige Weinanfälle und leidet unter dem Gefühl, egal wie viel sie leistet, niemals genug zu sein.`},
+  { id:"V2b", fall:2, typ:"A2", fallLabel:"Fall 2 – Marieluise", label:"Marieluise (35) · A2",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Luise (36) wird von ihren Untergebenen als extrem kontrollierend und unnahbar beschrieben. Sie delegiert kaum Aufgaben, da sie davon überzeugt ist, dass niemand ihre Qualitätsstandards erfüllt. In Meetings korrigiert sie Kollegen herablassend vor versammelter Mannschaft und reagiert auf kleinste Fehler mit passiv-aggressivem Verhalten. Sie erzeugt ein Klima der Angst und des Leistungsdrucks. Wenn Mitarbeiter sich über die Arbeitslast beschweren, reagiert Luise mit Unverständnis und unterstellt ihnen mangelnde Disziplin oder Kompetenz.`},
+  { id:"V2c", fall:2, typ:"B",  fallLabel:"Fall 2 – Marieluise", label:"Marieluise (35) · B",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Marieluise (35) wuchs in einem Elternhaus auf, in dem Anerkennung eng an Leistung gebunden war. Ihr Vater stellte hohe akademische Anforderungen und vermittelte früh die Botschaft, dass Wert und Zuneigung vor allem durch Erfolg verdient werden müssen. Fehler wurden selten offen besprochen, sondern häufig mit langanhaltendem Schweigen beantwortet. Für Marieluise bedeuteten solche Phasen nicht nur Kritik, sondern auch emotionalen Entzug. Schon als Kind entwickelte sie daher eine starke Sensibilität gegenüber Fehlern und ein tiefes Bedürfnis, Erwartungen vollständig zu erfüllen.
+
+Im Laufe ihrer Entwicklung lernte sie, dass Anerkennung vor allem dann kam, wenn sie besonders viel leistete und möglichst fehlerfrei arbeitete. Lob war selten, doch das Ausbleiben von Kritik wurde für sie zu einem wichtigen Zeichen von Sicherheit. Schrittweise verfestigte sich dadurch die Überzeugung, dass sie nur dann akzeptiert wird, wenn sie dauerhaft überdurchschnittliche Leistung zeigt und keine Schwächen erkennen lässt.
+
+Im Erwachsenenalter arbeitet Marieluise mit großer Intensität und übernimmt häufig Aufgaben, die eigentlich nicht in ihren Verantwortungsbereich fallen. Gleichzeitig begleitet sie ständig die Sorge, den Erwartungen nicht zu genügen. Diese innere Anspannung führt zu Erschöpfung, wiederkehrenden Weinanfällen und dem Gefühl, im Team isoliert und unverstanden zu sein.
+
+In ihrer beruflichen Rolle als Führungskraft zeigt sich jedoch eine andere Seite: Viele Mitarbeiter beschreiben sie als kontrollierend und distanziert. Sie delegiert Aufgaben nur ungern, korrigiert Kollegen häufig in einem als herablassend erlebten Ton und erzeugt dadurch ein Klima von Leistungsdruck und Unsicherheit. Paradoxerweise führt genau diese Strategie häufig dazu, dass sich Kollegen distanzieren, wodurch sich ihre Überzeugung bestätigt, sich auf andere kaum verlassen zu können.`},
+
+  // ── FALL 3: JAN-LUCA ─────────────────────────────────────────────────────
+  { id:"V3a", fall:3, typ:"A1", fallLabel:"Fall 3 – Jan-Luca", label:"Jan-Luca (42) · A1",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Jan (41) beschreibt sein Leben rückblickend als von anhaltender sozialer Isolation geprägt. Seine Kindheit erlebt er als eine Zeit mangelnder Resonanz und fehlender Spiegelung. Als hochbegabtes Kind wuchs er in einem bildungsfernen und emotional instabilen Umfeld auf, in dem seine kognitiven Fähigkeiten nicht als besondere Begabung wahrgenommen wurden, sondern eher als Provokation oder Verschrobenheit galten.
+
+Die daraus entstehenden frühen Kränkungen führten dazu, dass Jan sich zunehmend in eine Art „innere Emigration" zurückzog. In der Adoleszenz verschärfte sich diese Dynamik. Gleichaltrige reagierten auf seine Andersartigkeit oft mit Ausgrenzung und Mobbing. Auch mit Lehrern geriet er regelmäßig in Konflikte, nicht zuletzt wegen seines aufbrausenden Temperaments und seiner Neigung, Autoritäten offen infrage zu stellen.
+
+Im Erwachsenenalter gelang es Jan dennoch, beruflich erfolgreich zu sein. Heute arbeitet er als Führungskraft in einem mittelständischen Unternehmen, wobei sein wöchentliches Arbeitspensum regelmäßig 60 Stunden überschreitet.`},
+  { id:"V3b", fall:3, typ:"A2", fallLabel:"Fall 3 – Jan-Luca", label:"Jan-Luca (42) · A2",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Luca (43) zeigt klassische Züge des malignen Narzissmus. In seinem beruflichen Umfeld agiert er mit einer Mischung aus Grandiosität, Überheblichkeit und geringer Empathiefähigkeit. Besonders sensibel reagiert er auf Situationen, in denen andere über fachliche Kompetenzen verfügen, die seine eigene Expertise infrage stellen könnten. In solchen Momenten nutzt er seine analytischen Fähigkeiten gezielt, um das Gegenüber zu diskreditieren.
+
+Dabei greift er selten zu offenen Angriffen. Stattdessen arbeitet er mit subtilen Abwertungen, ironischen Kommentaren oder scheinbar sachlichen Einwänden, die bei seinem Gegenüber Gefühle von Unsicherheit und Inkompetenz hervorrufen. Kollegen berichten, dass sie sich nach Gesprächen mit ihm häufig verunsichert oder intellektuell unterlegen fühlen, ohne genau benennen zu können, wodurch dieser Eindruck entstanden ist.
+
+Wird Luca direkt mit seinem Verhalten konfrontiert, verändert sich seine Reaktion abrupt. Kritik erlebt er nicht als legitime Rückmeldung, sondern als persönlichen Angriff. Er stellt sich selbst als das eigentliche Opfer dar und bezeichnet berechtigte Einwände nicht selten als „Hexenjagd".`},
+  { id:"V3c", fall:3, typ:"B",  fallLabel:"Fall 3 – Jan-Luca", label:"Jan-Luca (42) · B",
+    hint:"Bitte lesen Sie den folgenden Text vollständig und aufmerksam durch.",
+    text:`Jan-Luca (42) wuchs in einem Umfeld auf, in dem seine besonderen Fähigkeiten kaum verstanden oder gewürdigt wurden. Als hochbegabtes Kind stellte er früh Fragen, dachte komplex und entwickelte Interessen, die in seinem familiären Umfeld wenig Resonanz fanden. Statt Anerkennung erlebte er häufig Irritation oder Ablehnung. Seine kognitiven Fähigkeiten wurden nicht als besondere Begabung gesehen, sondern eher als Verschrobenheit oder Provokation wahrgenommen. Für Jan-Luca bedeutete dies eine frühe Erfahrung von Nichtbeachtung und fehlender Spiegelung.
+
+Mit der Zeit zog er sich zunehmend in eine innere Welt zurück. In der Schule reagierten Gleichaltrige auf seine Andersartigkeit häufig mit Ausgrenzung oder Spott, und Konflikte mit Lehrern entstanden immer wieder, da Jan-Luca auf Ungerechtigkeiten impulsiv und temperamentvoll reagierte. Diese Erfahrungen verstärkten sein Gefühl, grundsätzlich nicht verstanden zu werden.
+
+Im Erwachsenenalter gelang es Jan-Luca dennoch, beruflich erfolgreich zu sein. Als Führungskraft findet er jene Anerkennung, welche ihm in früheren Lebensphasen verwehrt wurde. Gleichzeitig beschreiben ihn Kollegen als distanziert und schwer zugänglich. Wenn er bei anderen fachliche Kompetenz wahrnimmt, die seine eigene übertreffen könnte, reagiert er häufig mit subtiler Kritik. Mitarbeiter berichten, dass sie sich nach Gesprächen mit ihm oft inkompetent oder entwertet fühlen.
+
+Wird Jan-Luca auf dieses Verhalten angesprochen, erlebt er Kritik schnell als Angriff auf seine Person. Er beschreibt sich dann selbst als Ziel einer Kampagne. Aus seiner inneren Perspektive stellt sein Verhalten einen Versuch dar, sich gegen erneute Abwertung zu schützen. Paradoxerweise führt diese Strategie jedoch häufig dazu, dass sich andere Menschen emotional von ihm distanzieren, wodurch sich seine ursprüngliche Erfahrung der Isolation immer wieder bestätigt.`},
+];
+
+// ─── VIGNETTEN-AUSWAHL ───────────────────────────────────────────────────────
+// Pro Teilnehmer:
+//   Schritt 1: Pro Fall (1, 2, 3) deterministisch genau eine der drei Versionen wählen.
+//   Schritt 2: Die drei ausgewählten Vignetten in ihrer Reihenfolge mischen.
+// Beides basiert auf dem seeded RNG, der aus der participant_id abgeleitet wird.
+function buildVignettenOrder(pid) {
+  const seed = pid.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  let s = (Math.abs(seed) * 1327 + 7) % 2147483647;
+  const rng = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
+
+  // Schritt 1: Pro Fall eine Version zufällig (aber reproduzierbar) auswählen
+  const selected = [1, 2, 3].map(fall => {
+    const versions = ALLE_VIGNETTEN.filter(v => v.fall === fall);
+    return versions[Math.floor(rng() * versions.length)];
+  });
+
+  // Schritt 2: Reihenfolge der drei gewählten Vignetten mischen
+  for (let i = selected.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [selected[i], selected[j]] = [selected[j], selected[i]];
+  }
+  return selected; // genau 3 Vignetten, je eine pro Fall
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let phase      = "intro";
+let vigIdx     = 0;
+let partId     = generatePID();
+let orderedVig = [];
+let tsStart         = null;  // Startzeitpunkt beim Studienstart
+let tsEnd           = null;  // Endzeitpunkt beim Übergang in phase "done"
+let durationSeconds = null;  // einmalig berechnete Bearbeitungsdauer in Sekunden
+
+// ratings[vigId][itemId] = 1–5,  0 = noch nicht bewertet
+const ratings = {};
+ALLE_VIGNETTEN.forEach(v => {
+  ratings[v.id] = {};
+  MC_ITEMS.forEach(item => { ratings[v.id][item.id] = 0; });
+});
+
+// Freitextfelder pro Vignette (alle optional)
+const vignetteUnklar        = {};
+const vignetteUnrealistisch = {};
+const vignetteSprache       = {};
+ALLE_VIGNETTEN.forEach(v => {
+  vignetteUnklar[v.id]        = "";
+  vignetteUnrealistisch[v.id] = "";
+  vignetteSprache[v.id]       = "";
+});
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const tag = (cls, txt) => `<span class="tag ${cls}">${txt}</span>`;
+const divider = label => `<div class="divider">
+  <div class="divider-line"></div>
+  ${label ? `<span class="divider-label">${label}</span>` : ""}
+  <div class="divider-line"></div>
+</div>`;
+const setHeaderTag = html => { document.getElementById("headerTag").innerHTML = html; };
+const allRated = vigId => MC_ITEMS.every(item => ratings[vigId][item.id] > 0);
+
+// Änderung 3: lesbare Versionstitel für das Interface (Datensatz bleibt A1/A2/B)
+function typLabel(typ) {
+  return { A1: "Biografischer Hintergrund", A2: "Aktuelles Verhalten", B: "Integrierte Darstellung" }[typ] || typ;
+}
+
+function likertBtns(vigId, itemId) {
+  const val = ratings[vigId][itemId];
+  let h = "";
+  for (let v = 1; v <= 5; v++) {
+    h += `<button class="likert-btn${val===v?" selected":""}" onclick="setRating('${vigId}','${itemId}',${v})">${v}</button>`;
+  }
+  return h;
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render() {
+  const wrap = document.getElementById("mainWrap");
+  wrap.innerHTML = ""; wrap.className = "wrap fade-enter"; void wrap.offsetWidth;
+  const pw = document.getElementById("progressWrap");
+  const pf = document.getElementById("progressFill");
+  const ps = document.getElementById("progressSteps");
+
+  if (phase === "intro") {
+    pw.style.display = "none";
+    setHeaderTag(tag("tag-accent","Einleitung"));
+    wrap.innerHTML = renderIntro();
+  } else if (phase === "vignette") {
+    pw.style.display = "block";
+    pf.style.width = (vigIdx / orderedVig.length * 100) + "%";
+    ps.textContent = `${vigIdx+1} / ${orderedVig.length}`;
+    setHeaderTag(tag("tag-accent", `Vignette ${vigIdx+1} von ${orderedVig.length} · ${orderedVig[vigIdx].fallLabel}`));
+    wrap.innerHTML = renderVignette(orderedVig[vigIdx]);
+  } else if (phase === "done") {
+    pw.style.display = "none"; pf.style.width = "100%";
+    setHeaderTag(tag("tag-success","Abgeschlossen"));
+    wrap.innerHTML = renderDone();
+  }
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ── INTRO ─────────────────────────────────────────────────────────────────────
+function renderIntro() {
+  return `
+  <div class="card">
+    <div class="tags">
+      ${tag("tag-accent","Pretest")}
+      ${tag("tag-purple","ca. 5–8 Min.")}
+    </div>
+    <h1 class="page-title">Pretest zur Bewertung<br>von Fallbeschreibungen</h1>
+    <p class="page-sub">Projektarbeit und Kommunikation wissenschaftlicher Ergebnisse · M.Sc. Psychologie</p>
+
+    ${divider("Einleitung")}
+
+    <p class="body-text">
+      Im Rahmen eines Forschungsprojekts werden Texte entwickelt, die in einer nachfolgenden Studie als Stimulusmaterial eingesetzt werden sollen. Ziel dieses Pretests ist die Überprüfung der Qualität der Fallbeschreibungen: Sind sie verständlich? Lösen sie die intendierten Wahrnehmungen aus? Wirken sie glaubwürdig?
+    </p>
+    <p class="body-text" style="margin-top:14px;">
+      Sie werden drei kurze Fallbeschreibungen lesen und jeweils fünf Bewertungsfragen beantworten. Am Ende gibt es zwei optionale Felder für qualitatives Feedback. Bitte vertrauen Sie Ihrem unmittelbaren Eindruck – es gibt keine richtigen oder falschen Antworten.
+    </p>
+    <p class="body-text" style="margin-top:14px;">
+      <strong>Hinweis zum Datenschutz:</strong>
+      Es werden keine direkten personenbezogenen Angaben erhoben.
+      Die Antworten werden ausschließlich für wissenschaftliche Zwecke gespeichert.
+      Die Übertragung erfolgt an einen technischen Speicherdienst.
+      Im Studiencode werden keine IP-Adressen, Cookies oder Browserfingerprints gespeichert.
+    </p>
+
+    ${divider("Studienüberblick")}
+
+    <div class="info-grid">
+      <div class="info-box"><div class="info-box-label">Inhalt</div><div class="info-box-val">3 Fallbeschreibungen (1 pro Fall)</div></div>
+      <div class="info-box"><div class="info-box-label">Skala</div><div class="info-box-val">5-stufige Likert-Skala (1–5)</div></div>
+      <div class="info-box"><div class="info-box-label">Items je Vignette</div><div class="info-box-val">5 Bewertungsfragen</div></div>
+      <div class="info-box"><div class="info-box-label">Dauer</div><div class="info-box-val">ca. 5–8 Minuten</div></div>
+    </div>
+
+    ${divider("Ihre Studien-ID")}
+
+    <p class="note" style="margin-bottom:14px;">
+      Für diese Sitzung wurde automatisch eine ID vergeben. Sie dient ausschließlich der internen Datenzuordnung und enthält keine direkten personenbezogenen Angaben.
+    </p>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+      <div style="font-family:var(--mono);font-size:18px;letter-spacing:2px;color:var(--accent);
+        background:var(--accent-l);border:1.5px solid #c4d9ec;border-radius:5px;
+        padding:10px 20px;user-select:all;">${partId}</div>
+    </div>
+
+    <div class="consent-box" style="margin-top:0;margin-bottom:22px;">
+      <div class="consent-title">📋 Einwilligungserklärung</div>
+      <label class="consent-label" style="margin-bottom:0;">
+        <input type="checkbox" id="startConsentCheck" onchange="toggleStartBtn()" />
+        <span>
+          Ich habe die Informationen zur Studie gelesen und erkläre mich mit der freiwilligen
+          Teilnahme einverstanden. Mir ist bekannt, dass ich die Teilnahme jederzeit abbrechen kann.
+        </span>
+      </label>
+    </div>
+
+    <div style="margin-bottom:28px;">
+      <button class="btn btn-disabled" id="startBtn" onclick="" disabled>Fragebogen starten →</button>
+    </div>
+
+    <div class="notice">
+      <strong>Hinweis:</strong> Bitte beantworten Sie alle fünf Fragen je Fallbeschreibung vollständig, bevor Sie weitergehen können.
+    </div>
+  </div>`;
+}
+
+// ── VIGNETTE ──────────────────────────────────────────────────────────────────
+function renderVignette(vig) {
+  const ok     = allRated(vig.id);
+  const isLast = vigIdx === orderedVig.length - 1;
+
+  const itemsHtml = MC_ITEMS.map(item => {
+    const val   = ratings[vig.id][item.id];
+    const rated = val > 0;
+    const aL = item.ankerL.replace(/\n/g,"<br>");
+    const aR = item.ankerR.replace(/\n/g,"<br>");
+    return `
+    <div class="dim-card" id="dim-${vig.id}-${item.id}">
+      <div class="dim-header">
+        <div class="dim-header-left">${tag("tag-mid", item.label)}</div>
+        <span class="dim-check" id="check-${vig.id}-${item.id}" style="display:${rated?"inline":"none"}">✓ ${val} / 5</span>
+      </div>
+      <p class="dim-frage">${item.frage}</p>
+      <div class="likert-wrap">
+        <div class="likert-buttons" id="likert-${vig.id}-${item.id}">${likertBtns(vig.id,item.id)}</div>
+        <div class="likert-anchors">
+          <span class="likert-anker">${aL}</span>
+          <span class="likert-anker right">${aR}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+
+  return `
+  <div>
+    <div class="card-blue">
+      <div class="tags">
+        ${tag("tag-accent",`Fall ${vig.fall} · ${vig.fallLabel}`)}
+        ${tag("tag-mid",`Version ${vig.typ} – ${typLabel(vig.typ)}`)}
+      </div>
+      <p class="vignette-hint">${vig.hint}</p>
+      <div class="vignette-text">${vig.text}</div>
+    </div>
+
+    <div class="card" style="padding:28px 36px;">
+      <h2 class="section-title">Bewertung der Fallbeschreibung</h2>
+      <p class="body-text" style="margin-bottom:22px;">
+        Bitte beantworten Sie die folgenden Fragen zu dem Text, den Sie soeben gelesen haben.<br>
+        <span style="font-size:12.5px;color:var(--text-muted);">Skala: 1 = trifft überhaupt nicht zu &nbsp;·&nbsp; 5 = trifft voll zu</span>
+      </p>
+      ${itemsHtml}
+
+      <!-- Optionale Freitextfelder pro Vignette -->
+      <div class="feedback-card" style="margin-top:20px;background:var(--surface);border-color:var(--border);">
+        <p class="feedback-label" style="font-size:12.5px;font-weight:500;color:var(--text-muted);">Optionale Rückmeldung</p>
+        <p class="feedback-hint">Gab es etwas an dieser Fallbeschreibung, das für Sie unklar war?</p>
+        <textarea id="vig_unklar_${vig.id}" rows="2"
+          placeholder="Ggf. konkrete Stellen oder Formulierungen beschreiben …"
+          oninput="vignetteUnklar['${vig.id}']=this.value">${vignetteUnklar[vig.id] || ""}</textarea>
+      </div>
+
+      <div class="feedback-card" style="margin-top:10px;background:var(--surface);border-color:var(--border);">
+        <p class="feedback-label" style="font-size:12.5px;font-weight:500;color:var(--text-muted);">Unrealistische Inhalte <span style="font-weight:400;">(optional)</span></p>
+        <p class="feedback-hint">Gab es Aspekte dieser Fallbeschreibung, die unrealistisch wirkten?</p>
+        <textarea id="vig_unrealistisch_${vig.id}" rows="2"
+          placeholder="Beschreiben Sie ggf. konkrete Aspekte …"
+          oninput="vignetteUnrealistisch['${vig.id}']=this.value">${vignetteUnrealistisch[vig.id] || ""}</textarea>
+      </div>
+
+      <div class="feedback-card" style="margin-top:10px;background:var(--surface);border-color:var(--border);">
+        <p class="feedback-label" style="font-size:12.5px;font-weight:500;color:var(--text-muted);">Sprachliche Auffälligkeiten <span style="font-weight:400;">(optional)</span></p>
+        <p class="feedback-hint">Gab es Formulierungen, die sprachlich ungewöhnlich oder irritierend wirkten?</p>
+        <textarea id="vig_sprache_${vig.id}" rows="2"
+          placeholder="Beschreiben Sie ggf. konkrete Formulierungen …"
+          oninput="vignetteSprache['${vig.id}']=this.value">${vignetteSprache[vig.id] || ""}</textarea>
+      </div>
+
+      <div class="btn-row" style="margin-top:24px;">
+        <span class="validation-msg ${ok?"validation-ok":"validation-warn"}" id="validMsg">
+          ${ok ? "✓ Alle Fragen beantwortet" : `⚠ Bitte alle ${MC_ITEMS.length} Fragen beantworten`}
+        </span>
+        <button class="btn ${ok?"btn-primary":"btn-disabled"}" id="nextBtn" onclick="${ok?"nextVig()":""}">
+          ${isLast ? "Zum Abschluss →" : `Weiter zu Vignette ${vigIdx+2} →`}
+        </button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── DONE ──────────────────────────────────────────────────────────────────────
+function renderDone() {
+  return `
+  <div class="card" style="padding:48px 40px;">
+
+    <div style="text-align:center;">
+      <div class="done-icon">✦</div>
+      <h1 class="done-title">Vielen Dank für Ihre Teilnahme</h1>
+      <p class="done-text">
+        Sie haben alle drei Fallbeschreibungen bewertet. Ihre Rückmeldungen werden genutzt,
+        um die Qualität und Verständlichkeit des Stimulusmaterials zu prüfen und
+        gegebenenfalls zu überarbeiten – damit leisten Sie einen wertvollen Beitrag zur
+        methodischen Qualitätssicherung der Studie.
+      </p>
+      <div class="tags" style="justify-content:center;margin-bottom:36px;">
+        ${tag("tag-success","3 Vignetten bewertet")}
+        ${tag("tag-accent","18 Items beantwortet")}
+        ${tag("tag-purple","Keine Personenangaben")}
+      </div>
+    </div>
+
+    ${divider("Datenübermittlung")}
+
+    <div class="consent-box">
+      <div class="consent-title">💾 Auswertung auf Studienserver speichern</div>
+      <p class="body-text" style="margin-bottom:14px;">
+        Sie können Ihre Antworten direkt an den Studienleiter übermitteln.
+        Es werden keine direkten personenbezogenen Angaben erhoben.
+        Die Antworten werden ausschließlich für wissenschaftliche Zwecke gespeichert.
+        Die Übertragung erfolgt an einen technischen Speicherdienst.
+        Im Studiencode werden keine IP-Adressen, Cookies oder Browserfingerprints gespeichert.
+      </p>
+      <label class="consent-label">
+        <input type="checkbox" id="consentCheck" onchange="toggleSendBtn()" />
+        <span>
+          Ich bin einverstanden, dass meine Antworten ohne direkte personenbezogene Angaben
+          für wissenschaftliche Zwecke auf dem Studienserver gespeichert werden.
+        </span>
+      </label>
+      <div class="send-btn-wrap">
+        <button class="btn btn-disabled" id="sendBtn" onclick="sendResults()" disabled>
+          Auswertung speichern →
+        </button>
+        <button class="btn" style="background:var(--surface-alt);border-color:var(--border);color:var(--text-mid);"
+          onclick="downloadCSV()">
+          ⬇ CSV herunterladen
+        </button>
+        <div class="email-status" id="emailStatus"></div>
+      </div>
+      <p class="note" style="margin-top:12px;">
+        Ohne Ihre Zustimmung werden keinerlei Daten gespeichert.
+        Sie können das Fenster jederzeit schließen.
+      </p>
+    </div>
+  </div>`;
+}
+
+// ─── EXPORT ───────────────────────────────────────────────────────────────────
+// Exportstruktur (eine Zeile pro Vignette):
+//   participant_id | duration_seconds | vignette_id | vignette_fall | vignette_typ |
+//   opfer_wahrnehmung | taeter_wahrnehmung | ambivalenz | sympathie | verstaendlichkeit |
+//   vignette_unklar | vignette_unrealistisch | vignette_sprache
+
+function buildExportRows() {
+  // Korrektur 2: gespeicherten Wert verwenden – nicht neu aus Date.now() berechnen
+  const duration_seconds = durationSeconds ?? 0;
+
+  // Änderung 6: neue Exportstruktur – 3 Zeilen (eine pro gezeigter Vignette)
+  // Feedback (unrealistisch / sprache) erscheint nur in Zeile 1, restliche Zeilen leer.
+  return orderedVig.map((v, i) => ({
+    participant_id:        partId,
+    duration_seconds:      duration_seconds,
+    vignette_id:           v.id,
+    vignette_fall:         v.fall,
+    vignette_typ:          v.typ,
+    opfer_wahrnehmung:     ratings[v.id]["opfer_wahrnehmung"]  || 99,
+    taeter_wahrnehmung:    ratings[v.id]["taeter_wahrnehmung"] || 99,
+    ambivalenz:            ratings[v.id]["ambivalenz"]         || 99,
+    sympathie:             ratings[v.id]["sympathie"]          || 99,
+    verstaendlichkeit:     ratings[v.id]["verstaendlichkeit"]  || 99,
+    vignette_unklar:           vignetteUnklar[v.id]?.trim()        || "",
+    vignette_unrealistisch:    vignetteUnrealistisch[v.id]?.trim() || "",
+    vignette_sprache:          vignetteSprache[v.id]?.trim()       || "",
+  }));
+}
+
+function formatDataForEmail() {
+  const ts   = new Date().toLocaleString("de-DE");
+  const rows = buildExportRows();
+  const dur  = rows[0]?.duration_seconds ?? 0;
+
+  let body  = `PRETEST-AUSWERTUNG · Vignetten-Qualitätsprüfung\n`;
+  body     += `Zeitstempel:      ${ts}\n`;
+  body     += `Participant ID:   ${partId}\n`;
+  body     += `Bearbeitungsdauer: ${dur} Sekunden\n`;
+  body     += `${"─".repeat(60)}\n\n`;
+
+  // Rohdaten je Vignette (3 Zeilen)
+  rows.forEach((row, i) => {
+    body += `VIGNETTE ${String(i+1).padStart(2,"0")}  [${row.vignette_id}]  Fall ${row.vignette_fall} · ${row.vignette_typ}\n`;
+    body += `  opfer_wahrnehmung      : ${row.opfer_wahrnehmung}\n`;
+    body += `  taeter_wahrnehmung     : ${row.taeter_wahrnehmung}\n`;
+    body += `  ambivalenz             : ${row.ambivalenz}\n`;
+    body += `  sympathie              : ${row.sympathie}\n`;
+    body += `  verstaendlichkeit      : ${row.verstaendlichkeit}\n`;
+    body += `  vignette_unklar        : ${row.vignette_unklar        || "(keine Angabe)"}\n`;
+    body += `  vignette_unrealistisch : ${row.vignette_unrealistisch || "(keine Angabe)"}\n`;
+    body += `  vignette_sprache       : ${row.vignette_sprache       || "(keine Angabe)"}\n\n`;
+  });
+
+  // CSV (Header aus Zeile 1 des Export-Arrays → automatisch korrekt)
+  body += `${"─".repeat(60)}\n`;
+  body += `CSV\n`;
+  body += Object.keys(rows[0]).join(";") + "\n";
+  rows.forEach(row => {
+    body += Object.values(row).map(v =>
+      typeof v==="string" && v.includes(";") ? `"${v}"` : v
+    ).join(";") + "\n";
+  });
+
+  // SPSS
+  body += `\n${"─".repeat(60)}\n`;
+  body += `SPSS DATA LIST FREE\n`;
+  body += `  / participant_id (A12)\n`;
+  body += `    duration_seconds (F6)\n`;
+  body += `    vignette_id (A3) vignette_fall (F1) vignette_typ (A2)\n`;
+  body += `    opfer_wahrnehmung (F1) taeter_wahrnehmung (F1) ambivalenz (F1)\n`;
+  body += `    sympathie (F1) verstaendlichkeit (F1)\n`;
+  body += `    vignette_unklar (A200)\n`;
+  body += `    vignette_unrealistisch (A200) vignette_sprache (A200)\n`;
+  body += `  .\n\n`;
+  body += `VARIABLE LABELS\n`;
+  body += `  participant_id        'Teilnehmenden-ID (keine Personenangaben)'\n`;
+  body += `  duration_seconds     'Bearbeitungsdauer in Sekunden (gesamte Sitzung)'\n`;
+  body += `  vignette_id          'Vignetten-ID (V1a–V3c)'\n`;
+  body += `  vignette_fall        'Fallnummer (1=Annalena / 2=Marieluise / 3=Jan-Luca)'\n`;
+  body += `  vignette_typ         'Bedingung (A1=Opfer / A2=Taeter / B=Integriert)'\n`;
+  body += `  opfer_wahrnehmung    'Die Person wirkt eher wie ein Opfer ihrer Umstaende.'\n`;
+  body += `  taeter_wahrnehmung   'Die Person wirkt eher verantwortlich fuer die Situation.'\n`;
+  body += `  ambivalenz           'Die Situation wirkt moralisch ambivalent.'\n`;
+  body += `  sympathie            'Wie sympathisch erscheint Ihnen diese Person?'\n`;
+  body += `  verstaendlichkeit    'Wie verstaendlich war die Fallbeschreibung?'\n`;
+  body += `  vignette_unklar        'Optionale Unklarheiten zur jeweiligen Vignette'\n`;
+  body += `  vignette_unrealistisch 'Feedback: Unrealistische Inhalte (vignettenbezogen)'\n`;
+  body += `  vignette_sprache       'Feedback: Sprachliche Auffaelligkeiten (vignettenbezogen)'\n`;
+  body += `  .\n\n`;
+  body += `VALUE LABELS\n`;
+  body += `  opfer_wahrnehmung taeter_wahrnehmung ambivalenz sympathie verstaendlichkeit\n`;
+  body += `  1 'Stimme ueberhaupt nicht zu' 2 'Stimme eher nicht zu'\n`;
+  body += `  3 'Teils-teils' 4 'Stimme eher zu' 5 'Stimme voll zu' 99 'Fehlend'\n`;
+  body += `  .\n`;
+
+  return body;
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function startStudy() {
+  tsStart    = Date.now();   // Änderung 5: Startzeitpunkt für duration_seconds
+  orderedVig = buildVignettenOrder(partId);
+  phase = "vignette"; vigIdx = 0;
+  render();
+}
+
+function setRating(vigId, itemId, val) {
+  ratings[vigId][itemId] = val;
+  const c = document.getElementById(`likert-${vigId}-${itemId}`);
+  if (c) c.querySelectorAll(".likert-btn").forEach((b,i) => b.classList.toggle("selected",i+1===val));
+  const ck = document.getElementById(`check-${vigId}-${itemId}`);
+  if (ck) { ck.textContent = `✓ ${val} / 5`; ck.style.display = "inline"; }
+  const ok = allRated(vigId);
+  const nb = document.getElementById("nextBtn");
+  const vm = document.getElementById("validMsg");
+  if (nb) { nb.className=`btn ${ok?"btn-primary":"btn-disabled"}`; nb.onclick=ok?nextVig:null; }
+  if (vm) { vm.className=`validation-msg ${ok?"validation-ok":"validation-warn"}`;
+    vm.textContent = ok ? "✓ Alle Fragen beantwortet" : `⚠ Bitte alle ${MC_ITEMS.length} Fragen beantworten`; }
+}
+
+function nextVig() {
+  if (!allRated(orderedVig[vigIdx].id)) return;
+  if (vigIdx < orderedVig.length - 1) {
+    vigIdx++;
+  } else {
+    // Letzte Vignette abgeschlossen → Dauer einmalig festhalten
+    if (durationSeconds === null) {
+      tsEnd           = Date.now();
+      durationSeconds = Math.round((tsEnd - tsStart) / 1000);
+    }
+    phase = "done";
+  }
+  render();
+}
+
+function toggleStartBtn() {
+  const cb  = document.getElementById("startConsentCheck");
+  const btn = document.getElementById("startBtn");
+  if (!btn || !cb) return;
+  btn.className = cb.checked ? "btn btn-primary" : "btn btn-disabled";
+  btn.disabled  = !cb.checked;
+  btn.onclick   = cb.checked ? startStudy : null;
+}
+
+function toggleSendBtn() {
+  const cb=document.getElementById("consentCheck"), btn=document.getElementById("sendBtn");
+  if (!btn||!cb) return;
+  btn.className = cb.checked?"btn btn-primary":"btn btn-disabled";
+  btn.disabled  = !cb.checked;
+}
+
+async function sendResults() {
+  const cb = document.getElementById("consentCheck");
+  if (!cb?.checked) return;
+  const btn = document.getElementById("sendBtn");
+  const status = document.getElementById("emailStatus");
+  btn.disabled = true;
+  btn.className = "btn btn-disabled";
+  status.className = "email-status sending";
+  status.style.display = "block";
+  status.innerHTML = `<span class="spinner"></span> Daten werden gespeichert …`;
+
+  const data = {
+    participant_id: partId,
+    duration_seconds: durationSeconds,
+    rows: buildExportRows()
+  };
+
+  const ok = await submitToServer(data);
+  if (ok) {
+    status.className = "email-status ok";
+    status.textContent = "✓ Auswertung erfolgreich gespeichert. Vielen Dank!";
+    btn.style.display = "none";
+    document.getElementById("consentCheck").disabled = true;
+  } else {
+    status.className = "email-status err";
+    status.textContent = "⚠ Automatische Speicherung fehlgeschlagen. Bitte laden Sie die CSV-Datei lokal herunter.";
+    btn.disabled = false;
+    btn.className = "btn btn-primary";
+  }
+}
+
+// ─── CSV-DOWNLOAD ─────────────────────────────────────────────────────────────
+function downloadCSV() {
+  const rows = buildExportRows();
+  const header = Object.keys(rows[0]).join(";");
+  const csvLines = rows.map(row =>
+    Object.values(row).map(v =>
+      typeof v === "string" && (v.includes(";") || v.includes("\n") || v.includes('"'))
+        ? `"${v.replace(/"/g, '""')}"` : v
+    ).join(";")
+  );
+  const csvContent = [header, ...csvLines].join("\n");
+  const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href     = url;
+  a.download = `pretest_${partId}_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
